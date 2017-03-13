@@ -35,11 +35,11 @@ def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
 
 
 #Installing ambari-agent on multiple hosts
-def install_ambari_agent_on_multiple_hosts(hostnames,server_host):
+def install_ambari_agent_on_multiple_hosts(hostnames):
     print "Installing ambari agent on multiple hosts"
     try:
         for hostname in hostnames:
-            install_thread = Thread(target=install_ambari_agent_on_single_host,args=(hostname,server_host,))
+            install_thread = Thread(target=install_ambari_agent_on_single_host,args=(hostname,))
             install_thread.start()
             install_thread.join()
     except:
