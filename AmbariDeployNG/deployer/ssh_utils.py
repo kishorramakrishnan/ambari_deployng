@@ -10,4 +10,5 @@ def run_ssh_cmd(user, host,  command):
 
 def run_shell_command(command):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process.communicate()
     return process

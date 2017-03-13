@@ -58,11 +58,11 @@ def start_ambari_agent_on_multiple_hosts(hostnames):
         raise "Ambari-agents not started properly"
 
 # Starting ambari-agent on multiple hosts
-def register_and_start_ambari_agent_on_multiple_hosts(hostnames, server_host):
+def register_and_start_ambari_agent_on_multiple_hosts(hostnames):
     print "Resgistering and starting ambari agent on multiple hosts"
     try:
         for hostname in hostnames:
-            start_thread = Thread(target=register_ambari_agent_on_single_host, args=(hostname,server_host))
+            start_thread = Thread(target=register_ambari_agent_on_single_host, args=(hostname,))
             start_thread.start()
             start_thread.join()
     except:
@@ -181,6 +181,8 @@ hosts_file = open("/root/hosts","r")
 all_hosts = hosts_file.readlines()
 agent_hosts = all_hosts[0:len(all_hosts)-1]
 ambari_host = agent_hosts[0]
+setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
+install_ambari_agent_on_multiple_hosts(agent_hosts)
 register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
 install_and_setup_kerberos(ambari_host)
 register_blueprint("/root/blueprint.json",ambari_host,"blueprint-def")
