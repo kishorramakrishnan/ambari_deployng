@@ -9,9 +9,8 @@ from threading import Thread
 
 
 #Setup Ambari Server on the gateway host. Exit if something fails
-from numpy.core.fromnumeric import argsort
 
-from deployer import ssh_utils
+import ssh_utils
 
 
 def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_port):
@@ -155,7 +154,7 @@ def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
 def install_and_setup_kerberos(kdc_host):
     print "Install and setup Kerberos"
     ssh_utils.run_shell_command("chmod 777 setup_kerberos.sh")
-    ssh_utils.run_shell_command("ls -lrt", shell=True)
+    ssh_utils.run_shell_command("ls -lrt")
     setup_kerberos = ssh_utils.run_shell_command("./chmod 777 setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"))
     print "Command executed Setup KDC :", setup_kerberos.returncode
 
