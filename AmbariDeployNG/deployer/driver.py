@@ -163,11 +163,11 @@ def setup_ambari_repo(hostname, ambari_repo_url):
     print "Repo setup on single host", hostname
     print "Platform : "+platform.platform()
     if "centos-6" in platform.platform() or  "Darwin" in platform.platform():
-        setup_repo_command = "wget -O /etc/yum.repos.d/ambari.repo {0}".format(ambari_repo_url)
+        setup_repo_command = "ssh -T -i /root/ec2-keypair root@{0} wget -O /etc/yum.repos.d/ambari.repo {1}".format(hostname,ambari_repo_url)
         print "REPO COMMAND :: >",setup_repo_command
-        command_out = ssh_utils.run_ssh_cmd("root",hostname,setup_repo_command)
-        print command_out[0]
-        print "Setup Command executed :",command_out[1]
+        command_out = subprocess.Popen(setup_repo_command,shell=True)
+        print command_out.communicate()[0]
+        print "Setup Command executed :",command_out.returncode
 
 
 
