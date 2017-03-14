@@ -27,7 +27,7 @@ def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
     try:
         for hostname in hostnames:
             print "Setting up repo on : ",hostname
-            setup_thread = Thread(target=setup_ambari_repo,args=(hostname,repo_url))
+            setup_thread = Thread(target=setup_ambari_repo, args=(hostname, repo_url,))
             setup_thread.daemon = True
             setup_thread.start()
             setup_thread.join(timeout=30)
@@ -40,7 +40,7 @@ def install_ambari_agent_on_multiple_hosts(hostnames):
     print "Installing ambari agent on multiple hosts"
     try:
         for hostname in hostnames:
-            install_thread = Thread(target=install_ambari_agent_on_single_host,args=(hostname))
+            install_thread = Thread(target=install_ambari_agent_on_single_host,args=(hostname,))
             install_thread.daemon=True
             install_thread.start()
             install_thread.join()
@@ -78,7 +78,8 @@ def register_and_start_ambari_agent_on_multiple_hosts(hostnames,server_host):
 def install_ambari_agent_on_single_host(hostname):
     print "Installing ambari agent on single host", hostname
     setup_repo = subprocess.Popen("ssh -t -i /root/ec2-keypair root@{0} yum install ambari-agent -y".format(hostname),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    setup_repo.communicate()[0]
+    out,error = setup_repo.communicate()
+    print out + " : " + error
     print "Command executed :", setup_repo.returncode
 
 #Check Amabri-agent status on host
@@ -86,7 +87,7 @@ def is_ambari_agent_running(hostname):
     print "Checking ambari agent on single host", hostname
     agent_running_command = "ssh -t -i /root/ec2-keypair root@{0} ambari-agent status".format(hostname)
     setup_repo = subprocess.Popen(agent_running_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out = setup_repo.communicate()[0]
+    out, error = setup_repo.communicate()
     if "Ambari Server running" in out:
         return True
     else:
@@ -98,7 +99,8 @@ def register_ambari_agent_on_single_host(hostname,ambari_server_host):
     register_host_command = register_host_command.format(hostname,ambari_server_host)
     print register_host_command
     register_host = subprocess.Popen(register_host_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    register_host.communicate()[0]
+    out, error = register_host.communicate()
+    print out + " : " + error
     start_ambari_agent_on_single_host(hostname)
     print "Command executed :", register_host[1]
 
@@ -167,12 +169,13 @@ def install_and_setup_kerberos(kdc_host):
 def setup_ambari_repo(hostname, ambari_repo_url):
     print "Repo setup on single host", hostname
     print "Platform : "+platform.platform()
-    if "centos-6" in platform.platform() or  "Darwin" in platform.platform():
+    if "centos-6" in platform.platform() or "Darwin" in platform.platform():
         setup_repo_command = "ssh -t -i /root/ec2-keypair root@{0} wget -O /etc/yum.repos.d/ambari.repo {1}".format(hostname,ambari_repo_url)
         print "REPO COMMAND :: >",setup_repo_command
         try:
             command_out = subprocess.Popen(setup_repo_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE,bufsize=-1)
-            print command_out.communicate()[0]
+            out,error = command_out.communicate()[0]
+            print out + " : " + error
             print "Setup Command executed :",command_out.returncode
         except:
             print "exception in Setup"
