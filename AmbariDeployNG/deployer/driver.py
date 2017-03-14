@@ -28,6 +28,7 @@ def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
         for hostname in hostnames:
             print "Setting up repo on : ",hostname
             setup_thread = Thread(target=setup_ambari_repo,args=(hostname,repo_url,))
+            setup_thread.daemon = True
             setup_thread.start()
             setup_thread.join()
     except:
@@ -40,6 +41,7 @@ def install_ambari_agent_on_multiple_hosts(hostnames):
     try:
         for hostname in hostnames:
             install_thread = Thread(target=install_ambari_agent_on_single_host,args=(hostname,))
+            install_thread.daemon=True
             install_thread.start()
             install_thread.join()
     except:
@@ -51,6 +53,7 @@ def start_ambari_agent_on_multiple_hosts(hostnames):
     try:
         for hostname in hostnames:
             start_thread = Thread(target=start_ambari_agent_on_single_host, args=(hostname,))
+            start_thread.daemon=True
             start_thread.start()
             start_thread.join()
     except:
@@ -63,6 +66,7 @@ def register_and_start_ambari_agent_on_multiple_hosts(hostnames,server_host):
     try:
         for hostname in hostnames:
             start_thread = Thread(target=register_ambari_agent_on_single_host, args=(hostname,server_host,))
+            start_thread.daemon=True
             start_thread.start()
             start_thread.join()
     except:
