@@ -194,7 +194,7 @@ def setup_ambari_repo(hostname, ambari_repo_url):
 set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
 set_prop.communicate()
 hosts_file = open("/root/hosts","r")
-all_hosts = hosts_file.readlines()
+all_hosts = hosts_file.read().splitlines()
 agent_hosts = all_hosts[0:len(all_hosts)-1]
 ambari_host = agent_hosts[0]
 setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
