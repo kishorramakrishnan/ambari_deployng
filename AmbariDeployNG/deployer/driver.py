@@ -23,14 +23,14 @@ def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_por
 
 #Setup ambari repo on multiple hosts
 def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
-    print "Setting up ambari repo on multiple hosts"
+    print "Setting up ambari repo on multiple hosts : ",hostnames
     try:
         for hostname in hostnames:
             print "Setting up repo on : ",hostname
-            setup_thread = Thread(target=setup_ambari_repo,args=(hostname,repo_url,))
+            setup_thread = Thread(target=setup_ambari_repo,args=(hostname,repo_url))
             setup_thread.daemon = True
             setup_thread.start()
-            setup_thread.join()
+            setup_thread.join(timeout=30)
     except:
         print "Error: unable to start thread"
 
@@ -40,7 +40,7 @@ def install_ambari_agent_on_multiple_hosts(hostnames):
     print "Installing ambari agent on multiple hosts"
     try:
         for hostname in hostnames:
-            install_thread = Thread(target=install_ambari_agent_on_single_host,args=(hostname,))
+            install_thread = Thread(target=install_ambari_agent_on_single_host,args=(hostname))
             install_thread.daemon=True
             install_thread.start()
             install_thread.join()
@@ -52,7 +52,7 @@ def start_ambari_agent_on_multiple_hosts(hostnames):
     print "Installing ambari agent on multiple hosts"
     try:
         for hostname in hostnames:
-            start_thread = Thread(target=start_ambari_agent_on_single_host, args=(hostname,))
+            start_thread = Thread(target=start_ambari_agent_on_single_host, args=(hostname))
             start_thread.daemon=True
             start_thread.start()
             start_thread.join()
@@ -65,7 +65,7 @@ def register_and_start_ambari_agent_on_multiple_hosts(hostnames,server_host):
     print "Resgistering and starting ambari agent on multiple hosts"
     try:
         for hostname in hostnames:
-            start_thread = Thread(target=register_ambari_agent_on_single_host, args=(hostname,server_host,))
+            start_thread = Thread(target=register_ambari_agent_on_single_host, args=(hostname,server_host))
             start_thread.daemon=True
             start_thread.start()
             start_thread.join()
