@@ -82,7 +82,7 @@ def is_ambari_agent_running(hostname):
     print "Checking ambari agent on single host", hostname
     agent_running_command = "ssh -T -i /root/ec2-keypair root@{0} ambari-agent status".format(hostname)
     setup_repo = subprocess.Popen(agent_running_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out = setup_repo[0]
+    out = setup_repo.communicate()[0]
     if "Ambari Server running" in out:
         return True
     else:
