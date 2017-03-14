@@ -177,8 +177,8 @@ def setup_ambari_repo(hostname, ambari_repo_url):
             out,error = command_out.communicate()[0]
             print out + " : " + error
             print "Setup Command executed :",command_out.returncode
-        except:
-            print "exception in Setup"
+        except Exception,e:
+            print "exception in Setup ",e.message
             command_out.kill()
 
 
