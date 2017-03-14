@@ -29,7 +29,7 @@ def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
             print "Setting up repo on : ",hostname
             setup_thread = Thread(target=setup_ambari_repo,args=(hostname,repo_url,))
             setup_thread.start()
-            setup_thread.join(timeout=90)
+            setup_thread.join()
     except:
         print "Error: unable to start thread"
 
@@ -73,14 +73,15 @@ def register_and_start_ambari_agent_on_multiple_hosts(hostnames,server_host):
 #install on ambari agents
 def install_ambari_agent_on_single_host(hostname):
     print "Installing ambari agent on single host", hostname
-    setup_repo = ssh_utils.run_ssh_cmd("root",hostname,"yum install ambari-agent -y")
-    setup_repo[0]
-    print "Command executed :", setup_repo[1]
+    setup_repo = subprocess.Popen("ssh -T -i /root/ec2-keypair root@{0} yum install ambari-agent -y".format(hostname),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    setup_repo.communicate()[0]
+    print "Command executed :", setup_repo.returncode
 
 #Check Amabri-agent status on host
 def is_ambari_agent_running(hostname):
     print "Checking ambari agent on single host", hostname
-    setup_repo = ssh_utils.run_ssh_cmd("root",hostname,"ambari-agent status")
+    agent_running_command = "ssh -T -i /root/ec2-keypair root@{0} ambari-agent status".format(hostname)
+    setup_repo = subprocess.Popen(agent_running_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out = setup_repo[0]
     if "Ambari Server running" in out:
         return True
@@ -89,11 +90,11 @@ def is_ambari_agent_running(hostname):
 
 
 def register_ambari_agent_on_single_host(hostname,ambari_server_host):
-    register_host_command = "sed -i 's/hostname=localhost/hostname={0}/g' /etc/ambari-agent/conf/ambari-agent.ini"
-    register_host_command = register_host_command.format(ambari_server_host)
+    register_host_command = "ssh -T -i /root/ec2-keypair root@{0} sed -i 's/hostname=localhost/hostname={1}/g' /etc/ambari-agent/conf/ambari-agent.ini"
+    register_host_command = register_host_command.format(hostname,ambari_server_host)
     print register_host_command
-    register_host = ssh_utils.run_ssh_cmd("root", hostname, register_host_command)
-    register_host[0]
+    register_host = subprocess.Popen(register_host_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    register_host.communicate()[0]
     start_ambari_agent_on_single_host(hostname)
     print "Command executed :", register_host[1]
 
@@ -102,33 +103,33 @@ def register_ambari_agent_on_single_host(hostname,ambari_server_host):
 def start_ambari_agent_on_single_host(hostname):
     print "Starting ambari agent on single host", hostname
     if is_ambari_agent_running(hostname):
-        start_agent = ssh_utils.run_ssh_cmd("root", hostname, "ambari-agent restart")
+        start_agent = subprocess.Popen("ssh -T -i /root/ec2-keypair root@{0} ambari-agent restart".format(hostname),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else:
-        start_agent = ssh_utils.run_ssh_cmd("root", hostname, "ambari-agent start")
+        start_agent = subprocess.Popen("ssh -T -i /root/ec2-keypair root@{0} ambari-agent start".format(hostname),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    print "Command executed :", start_agent[1]
+    print "Command executed :", start_agent.communicate()[0]
 
 
 #install on ambari agents
 def install_ambari_server(hostname):
     print "Installing ambari server on  host ", hostname
-    setup_repo = ssh_utils.run_shell_command("yum install ambari-server -y")
-    setup_repo[0]
-    print "Command executed :", setup_repo[1]
+    setup_repo = subprocess.Popen("yum install ambari-server -y",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    setup_repo.communicate()[0]
+    print "Command executed :", setup_repo.returncode
 
 #install on ambari agents
 def start_ambari_server(hostname):
     print "Starting ambari server on  host ", hostname
-    setup_repo = ssh_utils.run_shell_command("ambari-server start")
-    setup_repo[0]
-    print "Command executed :", setup_repo[1]
+    setup_repo = subprocess.Popen("ambari-server start",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    setup_repo.communicate()[0]
+    print "Command executed :", setup_repo.returncode
 
 #Get Ambari server status
 def get_ambari_server_status(hostname):
     print "Checking ambari server status on  host ", hostname
-    check_server_status = ssh_utils.run_shell_command("ambari-server status")
+    check_server_status = subprocess.Popen("ambari-server status",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,err = check_server_status.communicate()
-    print "Command executed :", check_server_status[1]
+    print "Command executed :", check_server_status.returncode
     if "Ambari Server running" not in out:
         return True
     else:
@@ -139,24 +140,24 @@ def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
     print "Registering Blueprint using REST API"
     register_bp_command = "curl -i -u admin:admin -H 'X-Requested-By: ambari'  -X POST --data @{0} {1}"
     register_bp_command = register_bp_command.format(blueprint_json,"http://{0}:8080/api/v1/blueprints/{1}?validate_topology=false".format(ambari_server_host,blueprint_name))
-    register_bp = ssh_utils.run_shell_command(register_bp_command)
-    register_bp[0]
-    print "Command executed :", register_bp[1]
+    register_bp = subprocess.Popen(register_bp_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    register_bp.communicate()[0]
+    print "Command executed :", register_bp.returncode
 
 def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     print "Registering Blueprint using REST API"
     cluster_create_command = "curl -H 'X-Requested-By: ambari' -X POST -u admin:admin http://{0}:8080/api/v1/clusters/{1} -d @{2}"
     cluster_create_command = cluster_create_command.format(ambari_server_host,cluster_name,cluster_json)
-    create_cluster = ssh_utils.run_shell_command(cluster_create_command)
-    create_cluster[0]
-    print "Command executed :", create_cluster[1]
+    create_cluster = subprocess.Popen(cluster_create_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    create_cluster.communicate()[0]
+    print "Command executed :", create_cluster.returncode
 
 def install_and_setup_kerberos(kdc_host):
     print "Install and setup Kerberos"
     ssh_utils.run_shell_command("chmod 777 setup_kerberos.sh")
     ssh_utils.run_shell_command("ls -lrt")
-    setup_kerberos = ssh_utils.run_shell_command("./chmod 777 setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"))
-    print "Command executed Setup KDC :", setup_kerberos[1]
+    setup_kerberos = subprocess.Popen("./chmod 777 setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print "Command executed Setup KDC :", setup_kerberos.communicate()[1]
 
 #setup ambari repo
 def setup_ambari_repo(hostname, ambari_repo_url):
@@ -165,7 +166,7 @@ def setup_ambari_repo(hostname, ambari_repo_url):
     if "centos-6" in platform.platform() or  "Darwin" in platform.platform():
         setup_repo_command = "ssh -T -i /root/ec2-keypair root@{0} wget -O /etc/yum.repos.d/ambari.repo {1}".format(hostname,ambari_repo_url)
         print "REPO COMMAND :: >",setup_repo_command
-        command_out = subprocess.Popen(setup_repo_command,shell=True)
+        command_out = subprocess.Popen(setup_repo_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print command_out.communicate()[0]
         print "Setup Command executed :",command_out.returncode
 
