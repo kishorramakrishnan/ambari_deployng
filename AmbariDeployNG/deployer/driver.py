@@ -102,7 +102,7 @@ def register_ambari_agent_on_single_host(hostname,ambari_server_host):
     out, error = register_host.communicate()
     print out + " : " + error
     start_ambari_agent_on_single_host(hostname)
-    print "Command executed :", register_host[1]
+    print "Command executed :", register_host.returncode
 
 
 #install on ambari agents
@@ -191,6 +191,8 @@ def setup_ambari_repo(hostname, ambari_repo_url):
 #setup_ambari_repo_on_multiple_hosts(["172.27.24.196","172.27.28.136","172.27.14.131"],"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
 #install_ambari_server("localhost")
 #setup_ambari_server("mysql","ambaricustom","ambaricustomuser","bigdatacustom","172.27.14.131","3306")
+set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
+set_prop.communicate()
 hosts_file = open("/root/hosts","r")
 all_hosts = hosts_file.readlines()
 agent_hosts = all_hosts[0:len(all_hosts)-1]
