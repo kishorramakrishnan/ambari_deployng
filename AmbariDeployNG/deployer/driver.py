@@ -58,11 +58,11 @@ def start_ambari_agent_on_multiple_hosts(hostnames):
         raise "Ambari-agents not started properly"
 
 # Starting ambari-agent on multiple hosts
-def register_and_start_ambari_agent_on_multiple_hosts(hostnames):
+def register_and_start_ambari_agent_on_multiple_hosts(hostnames,server_host):
     print "Resgistering and starting ambari agent on multiple hosts"
     try:
         for hostname in hostnames:
-            start_thread = Thread(target=register_ambari_agent_on_single_host, args=(hostname,))
+            start_thread = Thread(target=register_ambari_agent_on_single_host, args=(hostname,server_host,))
             start_thread.start()
             start_thread.join()
     except:
@@ -73,14 +73,14 @@ def register_and_start_ambari_agent_on_multiple_hosts(hostnames):
 #install on ambari agents
 def install_ambari_agent_on_single_host(hostname):
     print "Installing ambari agent on single host", hostname
-    setup_repo = ssh_utils.run_ssh_cmd("yum install ambari-agent -y")
+    setup_repo = ssh_utils.run_ssh_cmd("root",hostname,"yum install ambari-agent -y")
     setup_repo.communicate()[0]
     print "Command executed :", setup_repo.returncode
 
 #Check Amabri-agent status on host
 def is_ambari_agent_running(hostname):
     print "Checking ambari agent on single host", hostname
-    setup_repo = ssh_utils.run_ssh_cmd("ambari-agent status")
+    setup_repo = ssh_utils.run_ssh_cmd("root",hostname,"ambari-agent status")
     out = setup_repo.communicate()[0]
     if "Ambari Server running" in out:
         return True
@@ -164,6 +164,7 @@ def setup_ambari_repo(hostname, ambari_repo_url):
     print "Platform : "+platform.platform()
     if "centos-6" in platform.platform():
         setup_repo_command = "wget -O /etc/yum.repos.d/ambari.repo {0}".format(ambari_repo_url)
+        print "REPO COMMAND :: >",setup_repo_command
         command_out = ssh_utils.run_ssh_cmd("root",hostname,setup_repo_command)
         print "Setup Command executed :",command_out.returncode
 
@@ -187,4 +188,3 @@ register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
 install_and_setup_kerberos(ambari_host)
 register_blueprint("/root/blueprint.json",ambari_host,"blueprint-def")
 deploy_cluster("cl1",ambari_host,"/root/cluster_deploy.json")
-
