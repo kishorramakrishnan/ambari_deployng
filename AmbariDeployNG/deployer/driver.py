@@ -18,8 +18,8 @@ def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_por
     setup_command = setup_command.format(db_type,db_host,db_port,db_name,db_username,db_password)
     print "DEPLOYNG : Setting up Ambari Server :",setup_command
     process = ssh_utils.run_shell_command(setup_command)
-    print "Command executed : {0}".format(process.communicate()[0])
-    print "Command Exit code : ", process.returncode
+    print "Command executed : {0}".format(process[0])
+    print "Command Exit code : ", process[1]
 
 #Setup ambari repo on multiple hosts
 def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
@@ -74,14 +74,14 @@ def register_and_start_ambari_agent_on_multiple_hosts(hostnames,server_host):
 def install_ambari_agent_on_single_host(hostname):
     print "Installing ambari agent on single host", hostname
     setup_repo = ssh_utils.run_ssh_cmd("root",hostname,"yum install ambari-agent -y")
-    setup_repo.communicate()[0]
-    print "Command executed :", setup_repo.returncode
+    setup_repo[0]
+    print "Command executed :", setup_repo[1]
 
 #Check Amabri-agent status on host
 def is_ambari_agent_running(hostname):
     print "Checking ambari agent on single host", hostname
     setup_repo = ssh_utils.run_ssh_cmd("root",hostname,"ambari-agent status")
-    out = setup_repo.communicate()[0]
+    out = setup_repo[0]
     if "Ambari Server running" in out:
         return True
     else:
@@ -93,9 +93,9 @@ def register_ambari_agent_on_single_host(hostname,ambari_server_host):
     register_host_command = register_host_command.format(ambari_server_host)
     print register_host_command
     register_host = ssh_utils.run_ssh_cmd("root", hostname, register_host_command)
-    register_host.communicate()[0]
+    register_host[0]
     start_ambari_agent_on_single_host(hostname)
-    print "Command executed :", register_host.returncode
+    print "Command executed :", register_host[1]
 
 
 #install on ambari agents
@@ -106,29 +106,29 @@ def start_ambari_agent_on_single_host(hostname):
     else:
         start_agent = ssh_utils.run_ssh_cmd("root", hostname, "ambari-agent start")
 
-    print "Command executed :", start_agent.returncode
+    print "Command executed :", start_agent[1]
 
 
 #install on ambari agents
 def install_ambari_server(hostname):
     print "Installing ambari server on  host ", hostname
     setup_repo = ssh_utils.run_shell_command("yum install ambari-server -y")
-    setup_repo.communicate()[0]
-    print "Command executed :", setup_repo.returncode
+    setup_repo[0]
+    print "Command executed :", setup_repo[1]
 
 #install on ambari agents
 def start_ambari_server(hostname):
     print "Starting ambari server on  host ", hostname
     setup_repo = ssh_utils.run_shell_command("ambari-server start")
-    setup_repo.communicate()[0]
-    print "Command executed :", setup_repo.returncode
+    setup_repo[0]
+    print "Command executed :", setup_repo[1]
 
 #Get Ambari server status
 def get_ambari_server_status(hostname):
     print "Checking ambari server status on  host ", hostname
     check_server_status = ssh_utils.run_shell_command("ambari-server status")
     out,err = check_server_status.communicate()
-    print "Command executed :", check_server_status.returncode
+    print "Command executed :", check_server_status[1]
     if "Ambari Server running" not in out:
         return True
     else:
@@ -140,33 +140,34 @@ def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
     register_bp_command = "curl -i -u admin:admin -H 'X-Requested-By: ambari'  -X POST --data @{0} {1}"
     register_bp_command = register_bp_command.format(blueprint_json,"http://{0}:8080/api/v1/blueprints/{1}?validate_topology=false".format(ambari_server_host,blueprint_name))
     register_bp = ssh_utils.run_shell_command(register_bp_command)
-    register_bp.communicate()[0]
-    print "Command executed :", register_bp.returncode
+    register_bp[0]
+    print "Command executed :", register_bp[1]
 
 def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     print "Registering Blueprint using REST API"
     cluster_create_command = "curl -H 'X-Requested-By: ambari' -X POST -u admin:admin http://{0}:8080/api/v1/clusters/{1} -d @{2}"
     cluster_create_command = cluster_create_command.format(ambari_server_host,cluster_name,cluster_json)
     create_cluster = ssh_utils.run_shell_command(cluster_create_command)
-    create_cluster.communicate()[0]
-    print "Command executed :", create_cluster.returncode
+    create_cluster[0]
+    print "Command executed :", create_cluster[1]
 
 def install_and_setup_kerberos(kdc_host):
     print "Install and setup Kerberos"
     ssh_utils.run_shell_command("chmod 777 setup_kerberos.sh")
     ssh_utils.run_shell_command("ls -lrt")
     setup_kerberos = ssh_utils.run_shell_command("./chmod 777 setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"))
-    print "Command executed Setup KDC :", setup_kerberos.returncode
+    print "Command executed Setup KDC :", setup_kerberos[1]
 
 #setup ambari repo
 def setup_ambari_repo(hostname, ambari_repo_url):
     print "Repo setup on single host", hostname
     print "Platform : "+platform.platform()
-    if "centos-6" in platform.platform():
+    if "centos-6" in platform.platform() or  "Darwin" in platform.platform():
         setup_repo_command = "wget -O /etc/yum.repos.d/ambari.repo {0}".format(ambari_repo_url)
         print "REPO COMMAND :: >",setup_repo_command
         command_out = ssh_utils.run_ssh_cmd("root",hostname,setup_repo_command)
-        print "Setup Command executed :",command_out.returncode
+        print command_out[0]
+        print "Setup Command executed :",command_out[1]
 
 
 

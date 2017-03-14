@@ -9,12 +9,15 @@ install_kerberos()
     sed -i "s/admin_server = kerberos.example.com/admin_server = $1/g" /etc/krb5.conf
     chmod 644 /etc/krb5.conf
     cat /etc/krb5.conf
+    #TODO : Setup for SUSE And UBUNTU need to be done
     echo -ne '\n\n' |  kdb5_util create -s
-    mkdir - /etc/security/keytabs/
+    #mkdir - /etc/security/keytabs/
     echo "Creating admin principal $3 with password $2"
     kadmin.local -q "addprinc -pw $2 $3"
     /sbin/service krb5kdc start
     /sbin/service kadmin start
+    #TODO: Ambari security setup : https://docs.hortonworks.com/HDPDocuments/Ambari-2.1.2.0/bk_Ambari_Security_Guide/content/_optional_set_up_kerberos_for_ambari_server.html
+
 }
 
 install_kerberos $1 $2 $3
