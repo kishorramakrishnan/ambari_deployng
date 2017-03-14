@@ -174,11 +174,11 @@ def setup_ambari_repo(hostname, ambari_repo_url):
         print "REPO COMMAND :: >",setup_repo_command
         try:
             command_out = subprocess.Popen(setup_repo_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE,bufsize=-1)
-            out,error = command_out.communicate()[0]
+            out,error = command_out.communicate()
             print out + " : " + error
             print "Setup Command executed :",command_out.returncode
         except Exception,e:
-            print "exception in Setup ",e.message
+            print "exception in Setup ",e
             command_out.kill()
 
 
