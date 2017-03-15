@@ -279,6 +279,7 @@ set_prop.communicate()
 hosts_file = open("/root/hosts","r")
 all_hosts = hosts_file.read().splitlines()
 agent_hosts = all_hosts[0:len(all_hosts)-1]
+prepare_configs(agent_hosts)
 ambari_host = agent_hosts[0]
 install_and_setup_mysql_connector()
 restart_ambari_server(ambari_host)
