@@ -222,6 +222,8 @@ def setup_ambari_repo(hostname, ambari_repo_url):
 #setup_ambari_repo_on_multiple_hosts(["172.27.24.196","172.27.28.136","172.27.14.131"],"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
 #install_ambari_server("localhost")
 #setup_ambari_server("mysql","ambaricustom","ambaricustomuser","bigdatacustom","172.27.14.131","3306")
+#TODO: MysqlGTID setup to be done
+
 set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
 set_prop.communicate()
 hosts_file = open("/root/hosts","r")
