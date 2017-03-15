@@ -133,6 +133,14 @@ def start_ambari_server(hostname):
     setup_repo.communicate()[0]
     logger.info("Command executed :", setup_repo.returncode)
 
+
+#Restart ambari server
+def restart_ambari_server(hostname):
+    logger.info("Starting ambari server on  host ", hostname)
+    setup_repo = subprocess.Popen("ambari-server restart",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    setup_repo.communicate()[0]
+    logger.info("Command executed :", setup_repo.returncode)
+
 #Get Ambari server status
 def get_ambari_server_status(hostname):
     logger.info("Checking ambari server status on  host ", hostname)
@@ -151,8 +159,9 @@ def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
     register_bp_command = register_bp_command.format(blueprint_json,"http://{0}:8080/api/v1/blueprints/{1}?validate_topology=false".format(ambari_server_host,blueprint_name))
     register_bp = subprocess.Popen(register_bp_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,error = register_bp.communicate()
-    logger.info("Out put : {0} {1}".format(out,error))
+    print "Out put : {0} {1}".format(out,error)
     logger.info("Command executed :", register_bp.returncode)
+
 
 def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     logger.info("Deploy cluster using REST API")
@@ -161,7 +170,7 @@ def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     total_wait_time_in_seconds = 3600
     create_cluster = subprocess.Popen(cluster_create_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,error = create_cluster.communicate()
-    logger.info("Out put : {0} {1}".format(out, error))
+    print "Out put : {0} {1}".format(out, error)
     logger.info("Command executed :", create_cluster.returncode)
 
 def wait_for_cluster_status(cluster_name,ambari_server_host):
@@ -193,8 +202,17 @@ def install_and_setup_kerberos(kdc_host):
     logger.info("Install and setup Kerberos")
     ssh_utils.run_shell_command("chmod 777 setup_kerberos.sh")
     ssh_utils.run_shell_command("ls -lrt")
-    setup_kerberos = subprocess.Popen("./chmod 777 setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    setup_kerberos = subprocess.Popen("./setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     logger.info("Command executed Setup KDC :", setup_kerberos.communicate()[1])
+
+def install_and_setup_mysql_connector():
+    print "Install and setup MySQL Connector"
+    subprocess.Popen("chmod 777 setup_mysql_connector.sh",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out = ssh_utils.run_shell_command("ls -lrt")[0]
+    print out
+    setup_mysql = subprocess.Popen("./setup_mysql_connector.sh",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    logger.info("Command executed Setup KDC :", setup_mysql.communicate()[1])
+
 
 #setup ambari repo
 def setup_ambari_repo(hostname, ambari_repo_url):
@@ -230,10 +248,12 @@ hosts_file = open("/root/hosts","r")
 all_hosts = hosts_file.read().splitlines()
 agent_hosts = all_hosts[0:len(all_hosts)-1]
 ambari_host = agent_hosts[0]
+install_and_setup_mysql_connector
+restart_ambari_server(ambari_host)
 setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
 install_ambari_agent_on_multiple_hosts(agent_hosts)
 register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
-install_and_setup_kerberos(ambari_host)
+#install_and_setup_kerberos(ambari_host)
 register_blueprint("/root/blueprint.json",ambari_host,"blueprint-def")
 deploy_cluster("cl1",ambari_host,"/root/cluster_deploy.json")
 wait_for_cluster_status("cl1",ambari_host)
