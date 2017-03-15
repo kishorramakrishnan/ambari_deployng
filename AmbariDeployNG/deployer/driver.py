@@ -23,7 +23,7 @@ def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_por
     logger.info("DEPLOYNG : Setting up Ambari Server :",setup_command)
     process = ssh_utils.run_shell_command(setup_command)
     logger.info("Command executed : {0}".format(process[0]))
-    logger.info("Command Exit code : {}", format(process[1]))
+    logger.info("Command Exit code : {0}", format(process[1]))
 
 #Setup ambari repo on multiple hosts
 def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
@@ -84,7 +84,7 @@ def install_ambari_agent_on_single_host(hostname):
     setup_repo = subprocess.Popen("ssh -t -i /root/ec2-keypair root@{0} yum install ambari-agent -y".format(hostname),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,error = setup_repo.communicate()
     print out + " : " + error
-    logger.info("Command executed : {}".format(setup_repo.returncode))
+    logger.info("Command executed : {0}".format(setup_repo.returncode))
 
 #Check Amabri-agent status on host
 def is_ambari_agent_running(hostname):
@@ -106,7 +106,7 @@ def register_ambari_agent_on_single_host(hostname,ambari_server_host):
     out, error = register_host.communicate()
     print out + " : " + error
     start_ambari_agent_on_single_host(hostname)
-    logger.info("Command executed : {} ".format(register_host.returncode))
+    logger.info("Command executed : {0} ".format(register_host.returncode))
 
 
 #install on ambari agents
@@ -125,7 +125,7 @@ def install_ambari_server(hostname):
     logger.info("Installing ambari server on  host ", hostname)
     setup_repo = subprocess.Popen("yum install ambari-server -y",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     setup_repo.communicate()[0]
-    logger.info("Command executed : {} ".format(setup_repo.returncode))
+    logger.info("Command executed : {0} ".format(setup_repo.returncode))
 
 #install on ambari agents
 def start_ambari_server(hostname):
@@ -140,14 +140,14 @@ def restart_ambari_server(hostname):
     logger.info("Starting ambari server on  host ", hostname)
     setup_repo = subprocess.Popen("ambari-server restart",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     setup_repo.communicate()[0]
-    logger.info("Command executed : {} ".format(setup_repo.returncode))
+    logger.info("Command executed : {0} ".format(setup_repo.returncode))
 
 #Get Ambari server status
 def get_ambari_server_status(hostname):
     logger.info("Checking ambari server status on  host ", hostname)
     check_server_status = subprocess.Popen("ambari-server status",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,err = check_server_status.communicate()
-    logger.info("Command executed : {} ".format(check_server_status.returncode))
+    logger.info("Command executed : {0} ".format(check_server_status.returncode))
     if "Ambari Server running" not in out:
         return True
     else:
@@ -161,7 +161,7 @@ def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
     register_bp = subprocess.Popen(register_bp_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,error = register_bp.communicate()
     print "Out put : {0} {1}".format(out,error)
-    logger.info("Command executed : {} ".format(register_bp.returncode))
+    logger.info("Command executed : {0} ".format(register_bp.returncode))
 
 
 def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
@@ -172,7 +172,7 @@ def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     create_cluster = subprocess.Popen(cluster_create_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,error = create_cluster.communicate()
     print "Out put : {0} {1}".format(out, error)
-    logger.info("Command executed : {} ".format(create_cluster.returncode))
+    logger.info("Command executed : {0} ".format(create_cluster.returncode))
 
 def wait_for_cluster_status(cluster_name,ambari_server_host):
     logger.info("Waiting for Cluster Deploys status REST API")
@@ -196,7 +196,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
             if "COMPLETED" in out:
                 logger.info("DEPLOY COMPLETED!!! Tooke {0} seconds to finish".format(elapsed_time))
                 break
-    logger.info("Command executed : {} ".format(deploy_status.returncode))
+    logger.info("Command executed : {0} ".format(deploy_status.returncode))
 
 def install_kerberos_client_on_multiple_hosts(hosts):
     print "Installing Kerberos client on multiple hosts"
@@ -211,7 +211,7 @@ def install_and_setup_kerberos(kdc_host):
     ssh_utils.run_shell_command("chmod 777 setup_kerberos.sh")
     ssh_utils.run_shell_command("ls -lrt")
     setup_kerberos = subprocess.Popen("./setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    logger.info("Command executed Setup KDC : {}".format(setup_kerberos.communicate()[1]))
+    logger.info("Command executed Setup KDC : {0}".format(setup_kerberos.communicate()[1]))
 
 def install_and_setup_mysql_connector():
     print "Install and setup MySQL Connector"
@@ -219,7 +219,7 @@ def install_and_setup_mysql_connector():
     out = ssh_utils.run_shell_command("ls -lrt")[0]
     print out
     setup_mysql = subprocess.Popen("./setup_mysql_connector.sh",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    logger.info("Command executed Setup KDC : {}".format(setup_mysql.communicate()[1]))
+    logger.info("Command executed Setup KDC : {0}".format(setup_mysql.communicate()[1]))
 
 
 #setup ambari repo
@@ -233,7 +233,7 @@ def setup_ambari_repo(hostname, ambari_repo_url):
             command_out = subprocess.Popen(setup_repo_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE,bufsize=-1)
             out,error = command_out.communicate()
             print out + " : " + error
-            logger.info("Setup Command executed :{} ".format(command_out.returncode))
+            logger.info("Setup Command executed :{0} ".format(command_out.returncode))
         except Exception,e:
             logger.info("exception in Setup ",e)
             command_out.kill()
