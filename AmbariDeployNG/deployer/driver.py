@@ -17,6 +17,19 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+def prepare_configs(agent_hosts):
+    logger.info("Preparing Configs")
+    ssh_utils.run_shell_command("cp conf/cluster_deploy.json conf/cluster_deploy_1.json")
+    host_number = 1
+    for host_name in agent_hosts:
+        command = "sed -i 's/host_group_ph_{0}/{1}/g' conf/cluster_deploy_1.json".format(host_number,host_name)
+        print command
+        resp = ssh_utils.run_shell_command(command)
+        logger.info(resp[0])
+        print resp[0]
+        host_number = host_number+1
+
+
 def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_port):
     setup_command = "ambari-server setup --database={0} --databasehost={1} --databaseport={2} --databasename={3} --databaseusername={4} --databasepassword={5} -s"
     setup_command = setup_command.format(db_type,db_host,db_port,db_name,db_username,db_password)
@@ -184,7 +197,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
         deploy_status = subprocess.Popen(cluster_deploy_command, shell=True, stdout=subprocess.PIPE,
                                           stderr=subprocess.PIPE)
         out, error = deploy_status.communicate()
-        logger.info("Out put : {0} {1}".format(out, error))
+        logger.debug("Out put : {0} {1}".format(out, error))
         if "IN_PROGRESS" in out:
             logger.info("Deploy in progress : Time elapsed in seconds: ", elapsed_time)
             time.sleep(60)
@@ -198,8 +211,18 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
                 break
     logger.info("Command executed : {0} ".format(deploy_status.returncode))
 
-def install_kerberos_client_on_multiple_hosts(hosts):
+def install_kerberos_client_on_multiple_hosts(hostnames):
     print "Installing Kerberos client on multiple hosts"
+    logger.info("Setting up ambari repo on multiple hosts : ", hostnames)
+    try:
+        for hostname in hostnames:
+            logger.info("Setting up repo on : ", hostname)
+            setup_thread = Thread(target=setup_ambari_repo, args=(install_kerberos_client_on_single_host, hostname,))
+            setup_thread.daemon = True
+            setup_thread.start()
+            setup_thread.join(timeout=30)
+    except:
+        logger.info("Error: unable to start thread")
 
 def install_kerberos_client_on_single_host(host):
     logger.info("Installing Kerberos clients on host : ",host)
@@ -263,6 +286,6 @@ setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.a
 install_ambari_agent_on_multiple_hosts(agent_hosts)
 register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
 #install_and_setup_kerberos(ambari_host)
-register_blueprint("/root/blueprint.json",ambari_host,"blueprint-def")
-deploy_cluster("cl1",ambari_host,"/root/cluster_deploy.json")
+register_blueprint("conf/blueprint.json",ambari_host,"blueprint-def")
+deploy_cluster("cl1",ambari_host,"conf/cluster_deploy_1.json")
 wait_for_cluster_status("cl1",ambari_host)
