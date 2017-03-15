@@ -13,6 +13,7 @@ from threading import Thread
 import ssh_utils
 import logging
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -197,6 +198,13 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
                 break
     logger.info("Command executed :", deploy_status.returncode)
 
+def install_kerberos_client_on_multiple_hosts(hosts):
+    print "Installing Kerberos client on multiple hosts"
+
+def install_kerberos_client_on_single_host(host):
+    logger.info("Installing Kerberos clients on host : ",host)
+    ssh_utils.run_ssh_cmd("user",host,"")
+
 
 def install_and_setup_kerberos(kdc_host):
     logger.info("Install and setup Kerberos")
@@ -242,13 +250,14 @@ def setup_ambari_repo(hostname, ambari_repo_url):
 #setup_ambari_server("mysql","ambaricustom","ambaricustomuser","bigdatacustom","172.27.14.131","3306")
 #TODO: MysqlGTID setup to be done
 
+
 set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
 set_prop.communicate()
 hosts_file = open("/root/hosts","r")
 all_hosts = hosts_file.read().splitlines()
 agent_hosts = all_hosts[0:len(all_hosts)-1]
 ambari_host = agent_hosts[0]
-install_and_setup_mysql_connector
+install_and_setup_mysql_connector()
 restart_ambari_server(ambari_host)
 setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
 install_ambari_agent_on_multiple_hosts(agent_hosts)
