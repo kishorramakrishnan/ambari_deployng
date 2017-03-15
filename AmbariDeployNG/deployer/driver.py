@@ -6,6 +6,7 @@ import platform
 import subprocess
 import time
 from threading import Thread
+import sys
 
 
 #Setup Ambari Server on the gateway host. Exit if something fails
@@ -202,13 +203,12 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
             logger.info("Deploy in progress : Time elapsed in seconds: ", elapsed_time)
             time.sleep(60)
             elapsed_time = elapsed_time + 60
-        else:
-            if "FAILED" in out:
-                logger.info("Deploy Failed")
-                break
-            if "COMPLETED" in out:
-                logger.info("DEPLOY COMPLETED!!! Tooke {0} seconds to finish".format(elapsed_time))
-                break
+        if "FAILED" in out:
+            logger.info("Deploy Failed")
+            break
+        if "COMPLETED" in out:
+            logger.info("DEPLOY COMPLETED!!! Tooke {0} seconds to finish".format(elapsed_time))
+            break
     logger.info("Command executed : {0} ".format(deploy_status.returncode))
 
 def install_kerberos_client_on_multiple_hosts(hostnames):
@@ -217,7 +217,7 @@ def install_kerberos_client_on_multiple_hosts(hostnames):
     try:
         for hostname in hostnames:
             logger.info("Setting up repo on : ", hostname)
-            setup_thread = Thread(target=setup_ambari_repo, args=(install_kerberos_client_on_single_host, hostname,))
+            setup_thread = Thread(target=install_kerberos_client_on_single_host, args=(hostname))
             setup_thread.daemon = True
             setup_thread.start()
             setup_thread.join(timeout=30)
@@ -226,7 +226,26 @@ def install_kerberos_client_on_multiple_hosts(hostnames):
 
 def install_kerberos_client_on_single_host(host):
     logger.info("Installing Kerberos clients on host : ",host)
-    ssh_utils.run_ssh_cmd("user",host,"")
+    ssh_utils.run_ssh_cmd("user",host,"yum install krb5-workstation -y")
+    ssh_utils.run_ssh_cmd("user", host, "yum install unzip -y")
+
+def distribute_JCE_on_multiple_hosts(hostnames):
+    print "Installing JCE on multiple hosts"
+    logger.info("Setting up ambari repo on multiple hosts : ", hostnames)
+    try:
+        for hostname in hostnames:
+            logger.info("Setting up repo on : ", hostname)
+            setup_thread = Thread(target=install_kerberos_client_on_single_host, args=(hostname))
+            setup_thread.daemon = True
+            setup_thread.start()
+            setup_thread.join(timeout=30)
+    except:
+        logger.info("Error: unable to start thread")
+
+def install_kerberos_client_on_single_host(host):
+    logger.info("Installing Kerberos clients on host : ",host)
+    ssh_utils.run_ssh_cmd("user",host,"yum install krb5-workstation -y")
+    ssh_utils.run_ssh_cmd("user", host, "yum install unzip -y")
 
 
 def install_and_setup_kerberos(kdc_host):
@@ -274,19 +293,24 @@ def setup_ambari_repo(hostname, ambari_repo_url):
 #TODO: MysqlGTID setup to be done
 
 
-set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
-set_prop.communicate()
-hosts_file = open("/root/hosts","r")
-all_hosts = hosts_file.read().splitlines()
-agent_hosts = all_hosts[0:len(all_hosts)-1]
-prepare_configs(agent_hosts)
-ambari_host = agent_hosts[0]
-install_and_setup_mysql_connector()
-restart_ambari_server(ambari_host)
-setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
-install_ambari_agent_on_multiple_hosts(agent_hosts)
-register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
-#install_and_setup_kerberos(ambari_host)
-register_blueprint("conf/blueprint.json",ambari_host,"blueprint-def")
-deploy_cluster("cl1",ambari_host,"conf/cluster_deploy_1.json")
-wait_for_cluster_status("cl1",ambari_host)
+def deploy():
+    cluster_type = sys.argv[1]
+    set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
+    set_prop.communicate()
+    hosts_file = open("/root/hosts","r")
+    all_hosts = hosts_file.read().splitlines()
+    agent_hosts = all_hosts[0:len(all_hosts)-1]
+    prepare_configs(agent_hosts)
+    ambari_host = agent_hosts[0]
+    install_and_setup_mysql_connector()
+    restart_ambari_server(ambari_host)
+    setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
+    install_ambari_agent_on_multiple_hosts(agent_hosts)
+    register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
+    #install_and_setup_kerberos(ambari_host)
+    register_blueprint("conf/blueprint_{0}.json",ambari_host,"blueprint-def".format(str(cluster_type).strip()))
+    deploy_cluster("cl1",ambari_host,"conf/cluster_deploy_1.json")
+    wait_for_cluster_status("cl1",ambari_host)
+
+if __name__ == "__main__":
+    deploy()
