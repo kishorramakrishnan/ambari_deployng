@@ -40,16 +40,19 @@ def prepare_configs_magic(agent_hosts):
             print master_slave_host
             all_commands.append(master_slave_host)
         elif host_number%2 ==1:
-            master_host = master_host+"fqdn\": \"{0}\"'\n'".format(host_name)
+            master_host = master_host+"fqdn\": \"{0}\",\\n".format(host_name)
             print master_host
             all_masters.append(master_host)
         elif host_number % 2 == 0:
-            slave_host = slave_host+"\"fqdn\": \"{0}\"'\n'".format(host_name)
+            slave_host = slave_host+"\"fqdn\": \"{0}\",\\n".format(host_name)
             print slave_host
             all_slaves.append(host_name)
 
         host_number = host_number+1
+    #removing additional commas and next lines
+    slave_host = slave_host[:-2]
     slave_host = slave_host+"#g' conf/cluster_deploy_1.json"
+    master_host = master_host[:-2]
     master_host = master_host +"#g' conf/cluster_deploy_1.json"
     all_commands.append(slave_host)
     all_commands.append(master_host)
