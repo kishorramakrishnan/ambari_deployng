@@ -28,6 +28,8 @@ def prepare_configs_magic(agent_hosts):
     all_commands =[]
     all_masters = []
     all_slaves = []
+    slave_host = "sed -i 's#\"slave_place_holder\":\"#"
+    master_host = "sed -i 's#\"master_place_holder\":\"\"#"
     for host_name in agent_hosts:
         if host_number == 0:
             client_slave_host = "sed -i 's#\"client_slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' conf/cluster_deploy_1.json".format(host_name)
@@ -38,18 +40,20 @@ def prepare_configs_magic(agent_hosts):
             print master_slave_host
             all_commands.append(master_slave_host)
         elif host_number%2 ==1:
-            master_host = "sed -i 's#\"master_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' conf/cluster_deploy_1.json".format(host_name)
+            master_host = master_host+"fqdn\": \"{0}\"'\n'".format(host_name)
             print master_host
             all_masters.append(master_host)
         elif host_number % 2 == 0:
-            slave_host = "sed -i 's#\"slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' conf/cluster_deploy_1.json".format(host_name)
+            slave_host = slave_host+"\"fqdn\": \"{0}\"'\n'".format(host_name)
             print slave_host
-            all_slaves.append(slave_host)
+            all_slaves.append(host_name)
+
         host_number = host_number+1
-        all_masters.append(all_slaves[0::2])
-        all_commands.append(all_masters)
-        all_commands.append(all_slaves)
-        print all_commands
+    slave_host = slave_host+"#g' conf/cluster_deploy_1.json"
+    master_host = master_host +"#g' conf/cluster_deploy_1.json"
+    all_commands.append(slave_host)
+    all_commands.append(master_host)
+    print all_commands
     for command in all_commands:
         print command
         resp = ssh_utils.run_shell_command(str(command))
