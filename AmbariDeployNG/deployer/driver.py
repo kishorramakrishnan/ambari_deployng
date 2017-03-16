@@ -15,15 +15,14 @@ from log_utils import get_logger
 logger = get_logger(__name__)
 
 def prepare_host_mapping(agent_hosts):
-    logger.info("Assigning hosts to Groups ",agent_hosts)
+    logger.info("Assigning hosts to Groups {0}".format(agent_hosts))
     ssh_utils.run_shell_command("cp conf/cluster_host_groups.json conf/cluster_host_groups_runtime.json")
-
 
     total_hosts = len(agent_hosts)
     #TODO : Change the number to 5 once we arrive at solution to include DB host( one host is dedicated for DB)
     if total_hosts < 4 :
         logger.error("Number of nodes in the cluster should be atleast 5")
-        exit
+        exit()
     #Static 
     
     client_slave_fqdns = "\"fqdn\":\""+agent_hosts[0]+"\""
@@ -43,10 +42,10 @@ def prepare_host_mapping(agent_hosts):
     if available_host_cnt == 1:
         master_only_fqdns.append(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
     
-    logger.info("client_slave_fqdns" , client_slave_fqdns)
-    logger.info("master_slave_dep_fdqns" , master_slave_dep_fdqns)
-    logger.info("master_only_fqdns" , master_only_fqdns)
-    logger.info("master_slave_fqdns" , master_slave_fqdns)
+    logger.info("client_slave_fqdns".format(client_slave_fqdns))
+    logger.info("master_slave_dep_fdqns".format(master_slave_dep_fdqns))
+    logger.info("master_only_fqdns".format(master_only_fqdns))
+    logger.info("master_slave_fqdns".format(master_slave_fqdns))
     
     
 def prepare_configs(agent_hosts, is_secure):
@@ -85,31 +84,34 @@ def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
         exit()
 def wait_for_cluster_status(cluster_name,ambari_server_host):
     logger.info("Waiting for Cluster Deploys status REST API")
-    cluster_requests = requests_util.get_api_call("http://{0}:8080/api/v1/clusters/{1}/requests/1".format(ambari_server_host,cluster_name))
-    if cluster_requests.status_code == 200:
-        total_wait_time_in_seconds = 3600
-        elapsed_time = 0
-        while elapsed_time < total_wait_time_in_seconds:
-            deploy_status = requests_util.get_api_call("http://{0}:8080/api/v1/clusters/{1}/requests/1".format(ambari_server_host,cluster_name))
-            deploy_status_value = deploy_status.json()['Requests']['request_status']
-            logger.debug("Status : {0}".format(deploy_status_value))
-            if "IN_PROGRESS" in deploy_status_value:
-                logger.info("Deploy in progress : Time elapsed in seconds: {0}".format(elapsed_time))
-                time.sleep(60)
-            elif "FAILED" in deploy_status_value:
-                logger.info("Deploy Failed")
-                logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(deploy_status.returncode, "logs/deploy.log"))
-                exit()
-                break
-            elif "COMPLETED" in deploy_status_value:
-                logger.info("DEPLOY COMPLETED!!! Took {0} seconds to finish".format(elapsed_time))
-                break
-            else:
-                logger.info("Something wrong {0}".format(deploy_status.json()))
-                break
-            elapsed_time = elapsed_time + 60
-    else:
-        logger.error("Something wrong : Cluster Deploy failed {0} {1}".format(cluster_requests.status_code, cluster_requests.json()))
+    try:
+        cluster_requests = requests_util.get_api_call("http://{0}:8080/api/v1/clusters/{1}/requests/1".format(ambari_server_host,cluster_name))
+        if cluster_requests.status_code == 200:
+            total_wait_time_in_seconds = 3600
+            elapsed_time = 0
+            while elapsed_time < total_wait_time_in_seconds:
+                deploy_status = requests_util.get_api_call("http://{0}:8080/api/v1/clusters/{1}/requests/1".format(ambari_server_host,cluster_name))
+                deploy_status_value = deploy_status.json()['Requests']['request_status']
+                logger.debug("Status : {0}".format(deploy_status_value))
+                if "IN_PROGRESS" in deploy_status_value:
+                    logger.info("Deploy in progress : Time elapsed in seconds: {0}".format(elapsed_time))
+                    time.sleep(60)
+                elif "FAILED" in deploy_status_value:
+                    logger.info("Deploy Failed")
+                    logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(deploy_status.returncode, "logs/deploy.log"))
+                    exit()
+                    break
+                elif "COMPLETED" in deploy_status_value:
+                    logger.info("DEPLOY COMPLETED!!! Took {0} seconds to finish".format(elapsed_time))
+                    break
+                else:
+                    logger.info("Something wrong {0}".format(deploy_status.json()))
+                    break
+                elapsed_time = elapsed_time + 60
+        else:
+            logger.error("Something wrong : Cluster Deploy failed {0} {1}".format(cluster_requests.status_code, cluster_requests.json()))
+    except Exception,e:
+        logger.error("BP creation API failed {0}".format(e))
     logger.info("Command executed : {0} ".format(deploy_status.returncode))
 
 #setupAmbariServer("oracle","XE","admin","admin","localhost","1521")
