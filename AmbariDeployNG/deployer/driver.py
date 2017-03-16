@@ -15,7 +15,7 @@ from log_utils import get_logger
 logger = get_logger(__name__)
 
 def prepare_configs_magic(agent_hosts):
-    logger.info("Preparing Configs for hosts ",agent_hosts)
+    logger.info("Preparing Configs for hosts {0}".format(agent_hosts))
     ssh_utils.run_shell_command("cp conf/cluster_deploy_magic.json conf/cluster_deploy_1.json")
     host_number = 0
     host_group_master = ""
@@ -83,7 +83,7 @@ def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
     logger.info("Registering Blueprint using REST API")
     register_bp = requests_util.post_api_call("http://{0}:8080/api/v1/blueprints/{1}?validate_topology=false".format(ambari_server_host,blueprint_name),blueprint_json)
     logger.info("Register BP response code : ", register_bp.status_code)
-    logger.debug("Register BP response JSON : \n", register_bp.json())
+    logger.debug("Register BP response JSON : \n {0}".format(register_bp.json()))
 
 
 def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
@@ -102,13 +102,13 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
             deploy_status_value = deploy_status.json()['Requests']['request_status']
             logger.debug("Status : {0}".format(deploy_status_value))
             if "IN_PROGRESS" in deploy_status_value:
-                logger.info("Deploy in progress : Time elapsed in seconds: ", elapsed_time)
+                logger.info("Deploy in progress : Time elapsed in seconds: {0}".format(elapsed_time))
                 time.sleep(60)
             elif "FAILED" in deploy_status_value:
                 logger.info("Deploy Failed")
                 break
             elif "COMPLETED" in deploy_status_value:
-                logger.info("DEPLOY COMPLETED!!! Tooke {0} seconds to finish".format(elapsed_time))
+                logger.info("DEPLOY COMPLETED!!! Took {0} seconds to finish".format(elapsed_time))
                 break
             else:
                 logger.info("Something wrong {0}".format(deploy_status.json()))
