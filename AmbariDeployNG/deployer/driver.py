@@ -49,11 +49,12 @@ def prepare_configs_magic(agent_hosts):
         all_masters.append(all_slaves[0::2])
         all_commands.append(all_masters)
         all_commands.append(all_slaves)
-        for command in all_commands:
-            print command
-            resp = ssh_utils.run_shell_command(command)
-            logger.info(resp[0])
-            print resp[0]
+        print all_commands
+    for command in all_commands:
+        print command
+        resp = ssh_utils.run_shell_command(command)
+        logger.info(resp[0])
+        print resp[0]
 
 
 def prepare_configs(agent_hosts):
