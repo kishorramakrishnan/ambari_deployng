@@ -42,20 +42,20 @@ def prepare_host_mapping(agent_hosts):
     if available_host_cnt == 1:
         master_only_fqdns+=(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
     
-    logger.info("client_slave_fqdns".format(client_slave_fqdns))
-    logger.info("master_slave_dep_fdqns".format(master_slave_dep_fdqns))
-    logger.info("master_only_fqdns".format(master_only_fqdns))
-    logger.info("master_slave_fqdns".format(master_slave_fqdns))
+    logger.info("client_slave_fqdns {0}".format(client_slave_fqdns))
+    logger.info("master_slave_dep_fdqns {0}".format(master_slave_dep_fdqns))
+    logger.info("master_only_fqdns {0}".format(master_only_fqdns))
+    logger.info("master_slave_fqdns {0}".format(master_slave_fqdns))
     
     #Replace the json content
     with open('conf/cluster_host_groups_runtime.json', 'r+') as file:
     	hosts_json_content = file.read()
    	file.seek(0)
-    	hosts_json_content.replace('"client_slave_fqdns":""', client_slave_fqdns)
-    	hosts_json_content.replace('"master_slave_dep_fdqns":""', master_slave_dep_fdqns)
-    	hosts_json_content.replace('"master_only_fqdns":""', master_only_fqdns)
-    	hosts_json_content.replace('"master_slave_fqdns":""', master_slave_fqdns)
-    	file.write(hosts_json_content)    
+    	newcontent=hosts_json_content.replace('\"client_slave_fqdns\":\"\"', client_slave_fqdns)
+        newcontent=hosts_json_content.replace('\"master_slave_dep_fdqns\":\"\"', master_slave_dep_fdqns)
+        newcontent=hosts_json_content.replace('\"master_only_fqdns\":\"\"', master_only_fqdns)
+        newcontent=hosts_json_content.replace('\"master_slave_fqdns\":\"\"', master_slave_fqdns)
+    	file.write(newcontent)
     
 def prepare_configs(agent_hosts, is_secure):
     logger.info("Preparing Configs")
@@ -142,11 +142,12 @@ def deploy():
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
     if "yes" in secure:
+        #TODO: Call prepare_host_mapping(agent_hosts)
         prepare_configs(agent_hosts, True)
         kerberos_utils.install_and_setup_kerberos()
         kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
     else:
-        prepare_configs(agent_hosts, False)
+        prepare_host_mapping(agent_hosts)
     ambari_host = agent_hosts[0]
     mysql_utils.install_and_setup_mysql_connector()
     ambari_utils.restart_ambari_server(ambari_host)
@@ -155,7 +156,7 @@ def deploy():
     ambari_utils.register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
     prepare_host_mapping(agent_hosts)
     register_blueprint("conf/blueprint_{0}.json".format(str(cluster_type).strip()),ambari_host,"blueprint-def")
-    deploy_cluster("cl1",ambari_host,"conf/cluster_deploy_1.json")
+    deploy_cluster("cl1",ambari_host,"conf/cluster_host_groups_runtime.json")
     wait_for_cluster_status("cl1",ambari_host)
 
 if __name__ == "__main__":
