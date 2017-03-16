@@ -43,7 +43,8 @@ def prepare_configs_magic(agent_hosts):
             master_host = master_host+"fqdn\": \"{0}\",\\n".format(host_name)
             print master_host
             all_masters.append(master_host)
-        elif host_number % 2 == 0:
+        elif host_number%2 == 0:
+            print "EVEN HOST"
             slave_host = slave_host+"\"fqdn\": \"{0}\",\\n".format(host_name)
             print slave_host
             all_slaves.append(host_name)
