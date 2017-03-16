@@ -244,7 +244,7 @@ def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
 
 def wait_for_cluster_status(cluster_name,ambari_server_host):
     logger.info("Waiting for Cluster Deploys status REST API")
-    cluster_deploy_command = "curl -H 'X-Requested-By: ambari' -X GET -u admin:admin http://{0}:8080/api/v1/requests/1"
+    cluster_deploy_command = "curl -H 'X-Requested-By: ambari' -X GET -u admin:admin http://{0}:8080/api/v1/clusters/{1}requests/1"
     cluster_deploy_command = cluster_deploy_command.format(ambari_server_host,cluster_name)
     total_wait_time_in_seconds = 3600
     elapsed_time = 0
@@ -311,7 +311,7 @@ def install_and_setup_mysql_connector():
     out = ssh_utils.run_shell_command("ls -lrt")[0]
     print out
     setup_mysql = subprocess.Popen("./setup_mysql_connector.sh",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    logger.info("Command executed Setup KDC : {0}".format(setup_mysql.communicate()[1]))
+    logger.info("Command executed Install And Setup Mysql Connector : {0}".format(setup_mysql.communicate()[1]))
 
 
 #setup ambari repo
