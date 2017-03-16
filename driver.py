@@ -26,7 +26,7 @@ def prepare_host_mapping(agent_hosts):
     #Static 
     
     client_slave_fqdns = "\"fqdn\":\""+agent_hosts[0]+"\""
-    master_slave_dep_fdqns = "\"fqdn\":\""+agent_hosts[1]+"\""
+    master_slave_dep_fqdns = "\"fqdn\":\""+agent_hosts[1]+"\""
     master_only_fqdns = "\"fqdn\":\""+agent_hosts[2]+"\""
     master_slave_fqdns = "\"fqdn\":\""+agent_hosts[3]+"\""
     
@@ -43,7 +43,7 @@ def prepare_host_mapping(agent_hosts):
         master_only_fqdns+=(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
     
     logger.info("client_slave_fqdns {0}".format(client_slave_fqdns))
-    logger.info("master_slave_dep_fdqns {0}".format(master_slave_dep_fdqns))
+    logger.info("master_slave_dep_fqdns {0}".format(master_slave_dep_fqdns))
     logger.info("master_only_fqdns {0}".format(master_only_fqdns))
     logger.info("master_slave_fqdns {0}".format(master_slave_fqdns))
     
@@ -52,7 +52,7 @@ def prepare_host_mapping(agent_hosts):
     	hosts_json_content = file.read()
    	file.seek(0)
     	hosts_json_content=hosts_json_content.replace('\"client_slave_fqdns\":\"\"', client_slave_fqdns)
-        hosts_json_content=hosts_json_content.replace('\"master_slave_dep_fdqns\":\"\"', master_slave_dep_fdqns)
+        hosts_json_content=hosts_json_content.replace('\"master_slave_dep_fqdns\":\"\"', master_slave_dep_fqdns)
         hosts_json_content=hosts_json_content.replace('\"master_only_fqdns\":\"\"', master_only_fqdns)
         hosts_json_content=hosts_json_content.replace('\"master_slave_fqdns\":\"\"', master_slave_fqdns)
     	file.write(hosts_json_content)
