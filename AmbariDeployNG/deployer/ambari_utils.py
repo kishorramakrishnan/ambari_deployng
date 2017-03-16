@@ -16,7 +16,7 @@ def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_por
 
 #Setup ambari repo on multiple hosts
 def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
-    logger.info("Setting up ambari repo on multiple hosts : ",hostnames)
+    logger.info("Setting up ambari repo on multiple hosts : {0}".format(hostnames))
     try:
         for hostname in hostnames:
             logger.info("Setting up repo on : {0}".format(hostname))
@@ -126,7 +126,7 @@ def start_ambari_server(hostname):
 
 #Restart ambari server
 def restart_ambari_server(hostname):
-    logger.info("Starting ambari server on  host {0}".format(hostname))
+    logger.info("Restarting ambari server on  host {0}".format(hostname))
     setup_repo = subprocess.Popen("ambari-server restart",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     setup_repo.communicate()[0]
     logger.info("Command executed : {0} ".format(setup_repo.returncode))

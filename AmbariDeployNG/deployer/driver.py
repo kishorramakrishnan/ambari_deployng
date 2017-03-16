@@ -82,7 +82,7 @@ def prepare_configs(agent_hosts, is_secure):
 def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
     logger.info("Registering Blueprint using REST API")
     register_bp = requests_util.post_api_call("http://{0}:8080/api/v1/blueprints/{1}?validate_topology=false".format(ambari_server_host,blueprint_name),blueprint_json)
-    logger.info("Register BP response code : ", register_bp.status_code)
+    logger.info("Register BP response code : {0}".format(register_bp.status_code))
     logger.debug("Register BP response JSON : \n {0}".format(register_bp.json()))
 
 
