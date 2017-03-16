@@ -51,11 +51,12 @@ def prepare_host_mapping(agent_hosts):
     with open('conf/cluster_host_groups_runtime.json', 'r+') as file:
     	hosts_json_content = file.read()
    	file.seek(0)
-    	newcontent=hosts_json_content.replace('\"client_slave_fqdns\":\"\"', client_slave_fqdns)
-        newcontent=hosts_json_content.replace('\"master_slave_dep_fdqns\":\"\"', master_slave_dep_fdqns)
-        newcontent=hosts_json_content.replace('\"master_only_fqdns\":\"\"', master_only_fqdns)
-        newcontent=hosts_json_content.replace('\"master_slave_fqdns\":\"\"', master_slave_fqdns)
-    	file.write(newcontent)
+    	hosts_json_content=hosts_json_content.replace('\"client_slave_fqdns\":\"\"', client_slave_fqdns)
+        hosts_json_content=hosts_json_content.replace('\"master_slave_dep_fdqns\":\"\"', master_slave_dep_fdqns)
+        hosts_json_content=hosts_json_content.replace('\"master_only_fqdns\":\"\"', master_only_fqdns)
+        hosts_json_content=hosts_json_content.replace('\"master_slave_fqdns\":\"\"', master_slave_fqdns)
+    	file.write(hosts_json_content)
+        logger.info("after replacing hosts {0}".format(hosts_json_content))
     
 def prepare_configs(agent_hosts, is_secure):
     logger.info("Preparing Configs")
