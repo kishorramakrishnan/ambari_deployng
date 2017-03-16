@@ -34,13 +34,13 @@ def prepare_host_mapping(agent_hosts):
     available_host_cnt = total_hosts - total_hosts_consumed
     
     while available_host_cnt >= 2:
-        master_only_fqdns+=(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
-        master_slave_fqdns+=(",\"fqdn\":\""+agent_hosts[total_hosts_consumed+1]+"\"")
+        master_only_fqdns+=("},{\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
+        master_slave_fqdns+=("},{\"fqdn\":\""+agent_hosts[total_hosts_consumed+1]+"\"")
         available_host_cnt=available_host_cnt-2
         total_hosts_consumed=total_hosts_consumed+2
     
     if available_host_cnt == 1:
-        master_only_fqdns+=(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
+        master_only_fqdns+=("},{\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
     
     logger.info("client_slave_fqdns {0}".format(client_slave_fqdns))
     logger.info("master_slave_dep_fqdns {0}".format(master_slave_dep_fqdns))
