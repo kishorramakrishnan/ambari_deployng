@@ -84,13 +84,17 @@ def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
     register_bp = requests_util.post_api_call("http://{0}:8080/api/v1/blueprints/{1}?validate_topology=false".format(ambari_server_host,blueprint_name),blueprint_json)
     logger.info("Register BP response code : {0}".format(register_bp.status_code))
     logger.debug("Register BP response JSON : \n {0}".format(register_bp.json()))
-
+    if register_bp.status_code !=201:
+        logger.error("BP registration failed : {0}. Stopping Deploy Now See More logs at {1}".format(register_bp.status_code,"logs/deploy.log"))
+        exit()
 
 def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     logger.info("Deploy cluster using REST API")
     create_cluster = requests_util.post_api_call("http://{0}:8080/api/v1/clusters/{1}".format(ambari_server_host,cluster_name),cluster_json)
     logger.info("Command executed : {0} ".format(str(create_cluster.returncode)))
-
+    if create_cluster.returncode !=200:
+        logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(create_cluster.returncode,"logs/deploy.log"))
+        exit()
 def wait_for_cluster_status(cluster_name,ambari_server_host):
     logger.info("Waiting for Cluster Deploys status REST API")
     cluster_requests = requests_util.get_api_call("http://{0}:8080/api/v1/clusters/{1}/requests/1".format(ambari_server_host,cluster_name))
@@ -106,6 +110,8 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
                 time.sleep(60)
             elif "FAILED" in deploy_status_value:
                 logger.info("Deploy Failed")
+                logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(deploy_status.returncode, "logs/deploy.log"))
+                exit()
                 break
             elif "COMPLETED" in deploy_status_value:
                 logger.info("DEPLOY COMPLETED!!! Took {0} seconds to finish".format(elapsed_time))
