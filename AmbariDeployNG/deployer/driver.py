@@ -89,9 +89,7 @@ def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
 def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     logger.info("Deploy cluster using REST API")
     create_cluster = requests_util.post_api_call("http://{0}:8080/api/v1/clusters/{1}".format(ambari_server_host,cluster_name),cluster_json)
-    out,error = create_cluster.communicate()
-    print "Out put : {0} {1}".format(out, error)
-    logger.info("Command executed : {0} ".format(create_cluster.returncode))
+    logger.info("Command executed : {0} ".format(str(create_cluster.returncode)))
 
 def wait_for_cluster_status(cluster_name,ambari_server_host):
     logger.info("Waiting for Cluster Deploys status REST API")
