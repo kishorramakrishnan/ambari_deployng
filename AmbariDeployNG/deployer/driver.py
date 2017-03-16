@@ -142,7 +142,7 @@ def deploy():
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
     if "yes" in secure:
-        #TODO: Call prepare_host_mapping(agent_hosts)
+        #TODO: Use prepare_host_mapping(agent_hosts)
         prepare_configs(agent_hosts, True)
         kerberos_utils.install_and_setup_kerberos()
         kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
@@ -154,7 +154,7 @@ def deploy():
     ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
     ambari_utils.install_ambari_agent_on_multiple_hosts(agent_hosts)
     ambari_utils.register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
-    prepare_host_mapping(agent_hosts)
+    #prepare_host_mapping(agent_hosts)
     register_blueprint("conf/blueprint_{0}.json".format(str(cluster_type).strip()),ambari_host,"blueprint-def")
     deploy_cluster("cl1",ambari_host,"conf/cluster_host_groups_runtime.json")
     wait_for_cluster_status("cl1",ambari_host)
