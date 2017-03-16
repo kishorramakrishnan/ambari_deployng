@@ -335,7 +335,7 @@ def deploy():
     install_ambari_agent_on_multiple_hosts(agent_hosts)
     register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
     install_and_setup_kerberos(ambari_host)
-    register_blueprint("conf/blueprint_{0}.json",ambari_host,"blueprint-def".format(str(cluster_type).strip()))
+    register_blueprint("conf/blueprint_{0}.json".format(str(cluster_type).strip()),ambari_host,"blueprint-def")
     deploy_cluster("cl1",ambari_host,"conf/cluster_deploy_1.json")
     wait_for_cluster_status("cl1",ambari_host)
 
