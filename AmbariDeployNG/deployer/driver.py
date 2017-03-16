@@ -72,9 +72,14 @@ def prepare_configs_magic(agent_hosts):
         print resp[0]
 
 
-def prepare_configs(agent_hosts):
+def prepare_configs(agent_hosts, is_secure):
     logger.info("Preparing Configs")
-    ssh_utils.run_shell_command("cp conf/cluster_deploy_secure.json conf/cluster_deploy_1.json")
+    if is_secure:
+        logger.info("Secure Cluster")
+        ssh_utils.run_shell_command("cp conf/cluster_deploy_secure.json conf/cluster_deploy_1.json")
+    else:
+        logger.info("Unsecure Cluster")
+        ssh_utils.run_shell_command("cp conf/cluster_deploy.json conf/cluster_deploy_1.json")
     host_number = 1
     for host_name in agent_hosts:
         command = "sed -i 's/host_group_ph_{0}/{1}/g' conf/cluster_deploy_1.json".format(host_number, host_name)
@@ -345,13 +350,17 @@ def setup_ambari_repo(hostname, ambari_repo_url):
 
 def deploy():
     cluster_type = sys.argv[1]
+    secure = sys.argv[2]
     print "Cluster Type is : "+ cluster_type
     set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
     set_prop.communicate()
     hosts_file = open("/root/hosts","r")
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
-    prepare_configs(agent_hosts)
+    if bool(secure):
+        prepare_configs(agent_hosts, True)
+    else:
+        prepare_configs(agent_hosts, False)
     ambari_host = agent_hosts[0]
     install_and_setup_mysql_connector()
     restart_ambari_server(ambari_host)
