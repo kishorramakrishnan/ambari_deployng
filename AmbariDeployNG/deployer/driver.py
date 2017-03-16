@@ -25,51 +25,41 @@ handler.setFormatter(formatter)
 # add the handlers to the logger
 logger.addHandler(handler)
 
-def prepare_configs_magic(agent_hosts):
-    logger.info("Preparing Configs for hosts ",agent_hosts)
-    ssh_utils.run_shell_command("cp conf/cluster_deploy_magic.json conf/cluster_deploy_1.json")
-    host_number = 0
-    host_group_master = ""
-    host_group_master_slave = ""
-    host_group_client_slave =""
-    all_commands =[]
-    all_masters = []
-    all_slaves = []
-    slave_host = "sed -i 's#\"slave_place_holder\":\"#"
-    master_host = "sed -i 's#\"master_place_holder\":\"\"#"
-    for host_name in agent_hosts:
-        if host_number == 0:
-            client_slave_host = "sed -i 's#\"client_slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' conf/cluster_deploy_1.json".format(host_name)
-            print client_slave_host
-            all_commands.append(client_slave_host)
-        elif host_number == 2:
-            master_slave_host = "sed -i 's#\"master_slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' conf/cluster_deploy_1.json".format(host_name)
-            print master_slave_host
-            all_commands.append(master_slave_host)
-        elif host_number % 2 ==1:
-            master_host = master_host+"fqdn\": \"{0}\",\\n".format(host_name)
-            print master_host
-            all_masters.append(master_host)
-        elif host_number % 2 == 0:
-            print "EVEN HOSTS"
-            slave_host = slave_host+"\"fqdn\": \"{0}\",\\n".format(host_name)
-            print slave_host
-            all_slaves.append(host_name)
+def prepare_host_mapping(agent_hosts):
+    logger.info("Assigning hosts to Groups ",agent_hosts)
+    ssh_utils.run_shell_command("cp conf/cluster_host_groups.json conf/cluster_host_groups_runtime.json")
 
-        host_number = host_number+1
-    #removing additional commas and next lines
-    slave_host = slave_host[:-2]
-    slave_host = slave_host+"#g' conf/cluster_deploy_1.json"
-    master_host = master_host[:-2]
-    master_host = master_host +"#g' conf/cluster_deploy_1.json"
-    all_commands.append(slave_host)
-    all_commands.append(master_host)
-    print all_commands
-    for command in all_commands:
-        print command
-        resp = ssh_utils.run_shell_command(str(command))
-        logger.info(resp[0])
-        print resp[0]
+
+    total_hosts = len(agent_hosts)
+    #TODO : Change the number to 5 once we arrive at solution to include DB host( one host is dedicated for DB)
+    if total_hosts < 4 :
+        logger.error("Number of nodes in the cluster should be atleast 5")
+        exit
+    #Static 
+    
+    client_slave_fqdns = "\"fqdn\":\""+agent_hosts[0]+"\""
+    master_slave_dep_fdqns = "\"fqdn\":\""+agent_hosts[1]+"\""
+    master_only_fqdns = "\"fqdn\":\""+agent_hosts[2]+"\""
+    master_slave_fqdns = "\"fqdn\":\""+agent_hosts[3]+"\""
+    
+    total_hosts_consumed = 4
+    available_host_cnt = total_hosts - total_hosts_consumed
+    
+    while available_host_cnt > 2:
+        master_only_fqdns.append(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
+        master_slave_fqdns.append(",\"fqdn\":\""+agent_hosts[total_hosts_consumed+1]+"\"")
+        available_host_cnt-2
+        total_hosts_consumed+2
+    
+    if available_host_cnt == 1:
+        master_only_fqdns.append(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
+    
+    logger.info("client_slave_fqdns" , client_slave_fqdns)
+    logger.info("master_slave_dep_fdqns" , master_slave_dep_fdqns)
+    logger.info("master_only_fqdns" , master_only_fqdns)
+    logger.info("master_slave_fqdns" , master_slave_fqdns)
+    
+    
 
 
 def prepare_configs(agent_hosts, is_secure):
