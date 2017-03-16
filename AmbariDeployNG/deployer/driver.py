@@ -228,17 +228,18 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
                                           stderr=subprocess.PIPE)
         out, error = deploy_status.communicate()
         logger.debug("Out put : {0} {1}".format(out, error))
-        logger.info("Waiting")
         if "IN_PROGRESS" in out:
             logger.info("Deploy in progress : Time elapsed in seconds: ", elapsed_time)
             time.sleep(60)
-            elapsed_time = elapsed_time + 60
-        if "FAILED" in out:
+        elif "FAILED" in out:
             logger.info("Deploy Failed")
             break
-        if "COMPLETED" in out:
+        elif "COMPLETED" in out:
             logger.info("DEPLOY COMPLETED!!! Tooke {0} seconds to finish".format(elapsed_time))
             break
+        else:
+            logger.info("Something wrong {0} : {1}".format(out,error))
+        elapsed_time = elapsed_time + 60
     logger.info("Command executed : {0} ".format(deploy_status.returncode))
 
 def install_kerberos_client_on_multiple_hosts(hostnames):
@@ -320,6 +321,7 @@ def setup_ambari_repo(hostname, ambari_repo_url):
 
 def deploy():
     cluster_type = sys.argv[1]
+    print "Cluster Type is : "+ cluster_type
     set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
     set_prop.communicate()
     hosts_file = open("/root/hosts","r")
