@@ -34,19 +34,28 @@ def prepare_host_mapping(agent_hosts):
     available_host_cnt = total_hosts - total_hosts_consumed
     
     while available_host_cnt > 2:
-        master_only_fqdns.append(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
-        master_slave_fqdns.append(",\"fqdn\":\""+agent_hosts[total_hosts_consumed+1]+"\"")
+        master_only_fqdns+=(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
+        master_slave_fqdns+=(",\"fqdn\":\""+agent_hosts[total_hosts_consumed+1]+"\"")
         available_host_cnt-2
         total_hosts_consumed+2
     
     if available_host_cnt == 1:
-        master_only_fqdns.append(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
+        master_only_fqdns+=(",\"fqdn\":\""+agent_hosts[total_hosts_consumed]+"\"")
     
     logger.info("client_slave_fqdns".format(client_slave_fqdns))
     logger.info("master_slave_dep_fdqns".format(master_slave_dep_fdqns))
     logger.info("master_only_fqdns".format(master_only_fqdns))
     logger.info("master_slave_fqdns".format(master_slave_fqdns))
     
+    #Replace the json content
+    with open('conf/cluster_host_groups_runtime.json', 'r+') as file:
+    	hosts_json_content = file.read()
+   	file.seek(0)
+    	hosts_json_content.replace('"client_slave_fqdns":""', client_slave_fqdns)
+    	hosts_json_content.replace('"master_slave_dep_fdqns":""', master_slave_dep_fdqns)
+    	hosts_json_content.replace('"master_only_fqdns":""', master_only_fqdns)
+    	hosts_json_content.replace('"master_slave_fqdns":""', master_slave_fqdns)
+    	file.write(hosts_json_content)    
     
 def prepare_configs(agent_hosts, is_secure):
     logger.info("Preparing Configs")
