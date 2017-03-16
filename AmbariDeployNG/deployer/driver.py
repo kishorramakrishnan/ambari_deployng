@@ -249,7 +249,7 @@ def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
 
 def wait_for_cluster_status(cluster_name,ambari_server_host):
     logger.info("Waiting for Cluster Deploys status REST API")
-    cluster_deploy_command = "curl -H 'X-Requested-By: ambari' -X GET -u admin:admin http://{0}:8080/api/v1/clusters/{1}requests/1"
+    cluster_deploy_command = "curl -H 'X-Requested-By: ambari' -X GET -u admin:admin http://{0}:8080/api/v1/clusters/{1}/requests/1"
     cluster_deploy_command = cluster_deploy_command.format(ambari_server_host,cluster_name)
     total_wait_time_in_seconds = 3600
     elapsed_time = 0
@@ -357,7 +357,7 @@ def deploy():
     hosts_file = open("/root/hosts","r")
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
-    if bool(secure):
+    if "yes" in secure:
         prepare_configs(agent_hosts, True)
     else:
         prepare_configs(agent_hosts, False)
