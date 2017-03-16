@@ -45,6 +45,7 @@ def prepare_configs_magic(agent_hosts):
             slave_host = "sed -i 's#\"slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' cluster_deploy_1.json".format(host_name)
             print slave_host
             all_slaves.append(slave_host)
+        host_number = host_number+1
         all_masters.append(all_slaves[0::2])
         all_commands.append(all_masters)
         all_commands.append(all_slaves)
