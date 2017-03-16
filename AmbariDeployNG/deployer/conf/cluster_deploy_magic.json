@@ -5,17 +5,23 @@
 	"host_groups": [{
 		"name": "host_group_master_slave",
 		"hosts": [{
-			"fqdn": "host_group_ph_master_slave"
+			"master_slave_place_holder":""
 		}]
 	}, {
 		"name": "host_group_master",
 		"hosts": [{
-			"fqdn": "host_group_ph_master"
+			"master_place_holder":""
 		}]
 	}, {
-		"name": "host_group_",
+		"name": "host_group_client_slave",
 		"hosts": [{
-			"fqdn": "host_group_ph_client_slave"
+			"client_slave_place_holder":""
 		}]
-	}]
+	},{
+		"name": "host_group_slave",
+		"hosts": [{
+			"slave_place_holder":""
+		}]
+	}
+	]
 }

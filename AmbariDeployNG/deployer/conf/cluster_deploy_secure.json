@@ -1,0 +1,94 @@
+{
+	"credentials": [{
+		"alias": "kdc.admin.credential",
+		"principal": "admin/admin@EXAMPLE.COM",
+		"key": "admin",
+		"type": "TEMPORARY"
+	}],
+	"security": {
+		"type": "KERBEROS",
+		"kerberos_descriptor": {
+			"identities": [{
+				"name": "smokeuser",
+				"principal": {
+					"value": "${cluster-env/smokeuser}-${cluster_name|toLower()}@${realm}",
+					"type": "user"
+				}
+			}, {
+				"name": "ambari-server",
+				"principal": {
+					"value": "ambari-server-${cluster_name|toLower()}@${realm}",
+					"type": "user"
+				}
+			}],
+			"services": [{
+				"components": [{
+					"name": "NAMENODE",
+					"identities": [{
+						"name": "hdfs",
+						"principal": {
+							"value": "${hadoop-env/hdfs_user}@${realm}",
+							"type": "user"
+						}
+					}]
+				}],
+				"name": "HDFS",
+				"identities": []
+			}, {
+				"components": [],
+				"name": "STORM",
+				"identities": [{
+					"name": "storm_components",
+					"principal": {
+						"value": "${storm-env/storm_user}@${realm}",
+						"type": "user"
+					}
+				}]
+			}, {
+				"components": [],
+				"name": "ZEPPELIN",
+				"identities": [{
+					"name": "zeppelin_user",
+					"principal": {
+						"value": "${zeppelin-env/zeppelin_user}@${realm}",
+						"type": "user"
+					}
+				}]
+			}, {
+				"components": [],
+				"name": "HBASE",
+				"identities": [{
+					"name": "hbase",
+					"principal": {
+						"value": "${hbase-env/hbase_user}@${realm}",
+						"type": "user"
+					}
+				}]
+			}]
+		}
+	},
+	"blueprint": "blueprint-def",
+	"default_password": "password",
+	"config_recommendation_strategy": "ALWAYS_APPLY_DONT_OVERRIDE_CUSTOM_VALUES",
+	"host_groups": [{
+		"name": "host_group_1",
+		"hosts": [{
+			"fqdn": "host_group_ph_1"
+		}]
+	}, {
+		"name": "host_group_2",
+		"hosts": [{
+			"fqdn": "host_group_ph_2"
+		}]
+	}, {
+		"name": "host_group_3",
+		"hosts": [{
+			"fqdn": "host_group_ph_3"
+		}]
+	}, {
+		"name": "host_group_4",
+		"hosts": [{
+			"fqdn": "host_group_ph_4"
+		}]
+	}]
+}

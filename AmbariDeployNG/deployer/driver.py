@@ -17,18 +17,47 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
+'''
 def prepare_configs(agent_hosts):
     logger.info("Preparing Configs")
     ssh_utils.run_shell_command("cp conf/cluster_deploy.json conf/cluster_deploy_1.json")
-    host_number = 1
+    host_number = 0
+    host_group_master = ""
+    host_group_master_slave = ""
+    host_group_client_slave =""
+    all_commands =[]
     for host_name in agent_hosts:
-        command = "sed -i 's/host_group_ph_{0}/{1}/g' conf/cluster_deploy_1.json".format(host_number,host_name)
+        if host_number == 0:
+            command = "sed -i 's/host_group_ph_{0}/{1}/g' conf/cluster_deploy_1.json".format(host_number, host_name)
+            client_slave_host = "sed -i 's#\"client_slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' cluster_deploy_magic_1.json".format(host_name)
+            print client_slave_host
+            all_commands.append(client_slave_host)
+        elif host_number == 2:
+            master_slave_host = "sed -i 's#\"master_slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' cluster_deploy_magic_1.json".format(host_name)
+            print master_slave_host
+            all_commands.append(master_slave_host)
+        elif host_number%2 ==0:
+            master_host = "sed -i 's#\"master_slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' cluster_deploy_magic_1.json".format(host_name)
+            print master_slave_host
+            all_commands.append(master_slave_host)
+
+            resp = ssh_utils.run_shell_command(command)
+            logger.info(resp[0])
+            print resp[0]
+            host_number = host_number + 1
+
+'''
+def prepare_configs(agent_hosts):
+    logger.info("Preparing Configs")
+    ssh_utils.run_shell_command("cp conf/cluster_deploy_secure.json conf/cluster_deploy_1.json")
+    host_number = 0
+    for host_name in agent_hosts:
+        command = "sed -i 's/host_group_ph_{0}/{1}/g' conf/cluster_deploy_1.json".format(host_number, host_name)
         print command
         resp = ssh_utils.run_shell_command(command)
         logger.info(resp[0])
         print resp[0]
-        host_number = host_number+1
+        host_number = host_number + 1
 
 
 def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_port):
@@ -199,6 +228,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
                                           stderr=subprocess.PIPE)
         out, error = deploy_status.communicate()
         logger.debug("Out put : {0} {1}".format(out, error))
+        logger.info("Waiting")
         if "IN_PROGRESS" in out:
             logger.info("Deploy in progress : Time elapsed in seconds: ", elapsed_time)
             time.sleep(60)
@@ -231,21 +261,16 @@ def install_kerberos_client_on_single_host(host):
 
 def distribute_JCE_on_multiple_hosts(hostnames):
     print "Installing JCE on multiple hosts"
-    logger.info("Setting up ambari repo on multiple hosts : ", hostnames)
+    logger.info("Installing JCE  on multiple hosts : ", hostnames)
+    unzip_command = "unzip -o -j -q /var/lib/ambari-server/resources/UnlimitedJCEPolicyJDK7.zip -d"
     try:
         for hostname in hostnames:
-            logger.info("Setting up repo on : ", hostname)
-            setup_thread = Thread(target=install_kerberos_client_on_single_host, args=(hostname))
-            setup_thread.daemon = True
-            setup_thread.start()
-            setup_thread.join(timeout=30)
+            logger.info("Setting up JCE on : ", hostname)
+            copy_command = ""
+            ssh_utils.run_shell_command("scp -i /root/ec2-keypair root@{} {}".format(hostname,copy_command))
+
     except:
         logger.info("Error: unable to start thread")
-
-def install_kerberos_client_on_single_host(host):
-    logger.info("Installing Kerberos clients on host : ",host)
-    ssh_utils.run_ssh_cmd("user",host,"yum install krb5-workstation -y")
-    ssh_utils.run_ssh_cmd("user", host, "yum install unzip -y")
 
 
 def install_and_setup_kerberos(kdc_host):
@@ -307,7 +332,7 @@ def deploy():
     setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
     install_ambari_agent_on_multiple_hosts(agent_hosts)
     register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
-    #install_and_setup_kerberos(ambari_host)
+    install_and_setup_kerberos(ambari_host)
     register_blueprint("conf/blueprint_{0}.json",ambari_host,"blueprint-def".format(str(cluster_type).strip()))
     deploy_cluster("cl1",ambari_host,"conf/cluster_deploy_1.json")
     wait_for_cluster_status("cl1",ambari_host)
