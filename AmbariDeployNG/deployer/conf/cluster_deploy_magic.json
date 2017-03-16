@@ -5,22 +5,22 @@
 	"host_groups": [{
 		"name": "host_group_master_slave",
 		"hosts": [{
-			"master_slave_place_holder":""
+			"fqdn_master_slave_place_holder":""
 		}]
 	}, {
 		"name": "host_group_master",
 		"hosts": [{
-			"master_place_holder":""
+			"fqdn_master_place_holder":""
 		}]
 	}, {
 		"name": "host_group_client_slave",
 		"hosts": [{
-			"client_slave_place_holder":""
+			"fqdn_client_slave_place_holder":""
 		}]
 	},{
 		"name": "host_group_slave",
 		"hosts": [{
-			"slave_place_holder":""
+			"fqdn_slave_place_holder":""
 		}]
 	}
 	]

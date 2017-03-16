@@ -17,6 +17,13 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+handler = logging.FileHandler('logs/deploy.log')
+handler.setLevel(logging.INFO)
+# create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(handler)
 
 def prepare_configs_magic(agent_hosts):
     logger.info("Preparing Configs for hosts ",agent_hosts)
@@ -39,12 +46,12 @@ def prepare_configs_magic(agent_hosts):
             master_slave_host = "sed -i 's#\"master_slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' conf/cluster_deploy_1.json".format(host_name)
             print master_slave_host
             all_commands.append(master_slave_host)
-        elif host_number%2 ==1:
+        elif host_number % 2 ==1:
             master_host = master_host+"fqdn\": \"{0}\",\\n".format(host_name)
             print master_host
             all_masters.append(master_host)
-        elif host_number%2 == 0:
-            print "EVEN HOST"
+        elif host_number % 2 == 0:
+            print "EVEN HOSTS"
             slave_host = slave_host+"\"fqdn\": \"{0}\",\\n".format(host_name)
             print slave_host
             all_slaves.append(host_name)
@@ -68,7 +75,7 @@ def prepare_configs_magic(agent_hosts):
 def prepare_configs(agent_hosts):
     logger.info("Preparing Configs")
     ssh_utils.run_shell_command("cp conf/cluster_deploy_secure.json conf/cluster_deploy_1.json")
-    host_number = 0
+    host_number = 1
     for host_name in agent_hosts:
         command = "sed -i 's/host_group_ph_{0}/{1}/g' conf/cluster_deploy_1.json".format(host_number, host_name)
         print command
@@ -242,8 +249,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
     total_wait_time_in_seconds = 3600
     elapsed_time = 0
     while elapsed_time < total_wait_time_in_seconds:
-        deploy_status = subprocess.Popen(cluster_deploy_command, shell=True, stdout=subprocess.PIPE,
-                                          stderr=subprocess.PIPE)
+        deploy_status = subprocess.Popen(cluster_deploy_command, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         out, error = deploy_status.communicate()
         logger.debug("Out put : {0} {1}".format(out, error))
         if "IN_PROGRESS" in out:
@@ -345,7 +351,7 @@ def deploy():
     hosts_file = open("/root/hosts","r")
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
-    prepare_configs_magic(agent_hosts)
+    prepare_configs(agent_hosts)
     ambari_host = agent_hosts[0]
     install_and_setup_mysql_connector()
     restart_ambari_server(ambari_host)
