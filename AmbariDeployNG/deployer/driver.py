@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 def prepare_configs_magic(agent_hosts):
-    logger.info("Preparing Configs")
+    logger.info("Preparing Configs for hosts ",agent_hosts)
     ssh_utils.run_shell_command("cp conf/cluster_deploy_magic.json conf/cluster_deploy_1.json")
     host_number = 0
     host_group_master = ""
@@ -30,7 +30,6 @@ def prepare_configs_magic(agent_hosts):
     all_slaves = []
     for host_name in agent_hosts:
         if host_number == 0:
-            command = "sed -i 's/host_group_ph_{0}/{1}/g' conf/cluster_deploy_1.json".format(host_number, host_name)
             client_slave_host = "sed -i 's#\"client_slave_place_holder\":\"\"#\"fqdn\": \"{0}\"\"#g' cluster_deploy_1.json".format(host_name)
             print client_slave_host
             all_commands.append(client_slave_host)
@@ -52,7 +51,7 @@ def prepare_configs_magic(agent_hosts):
         print all_commands
     for command in all_commands:
         print command
-        resp = ssh_utils.run_shell_command(command)
+        resp = ssh_utils.run_shell_command(str(command))
         logger.info(resp[0])
         print resp[0]
 
