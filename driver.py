@@ -89,7 +89,7 @@ def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     logger.info("Deploy cluster using REST API")
     create_cluster = requests_util.post_api_call("http://{0}:8080/api/v1/clusters/{1}".format(ambari_server_host,cluster_name),cluster_json)
     logger.info("Command executed : {0} ".format(str(create_cluster.status_code)))
-    if create_cluster.status_code !=200:
+    if create_cluster.status_code !=202:
         logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(create_cluster.status_code,"logs/deploy.log"))
         logger.error(create_cluster.json())
         exit()
