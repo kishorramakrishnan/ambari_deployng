@@ -20,10 +20,10 @@
 				"dfs.namenode.name.dir": "/grid/0/hadoop/hdfs/namenode",
 				"dfs.namenode.checkpoint.dir": "/grid/0/hadoop/hdfs/namesecondary",
 				"dfs.journalnode.edits.dir": "/grid/0/hadoop/hdfs/journal",
-				"dfs.namenode.http-address": "%HOSTGROUP::host_group_1%:20070",
+				"dfs.namenode.http-address": "%HOSTGROUP::client_slave%:20070",
 				"dfs.datanode.https.address": "0.0.0.0:20475",
 				"nfs.udp.client.portmap.timeout.millis": "5000",
-				"dfs.namenode.secondary.http-address": "%HOSTGROUP::host_group_2%:20090"
+				"dfs.namenode.secondary.http-address": "%HOSTGROUP::master_slave_dep%:20090"
 			}
 		}
 	}, {
