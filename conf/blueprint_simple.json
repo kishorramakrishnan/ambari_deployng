@@ -415,7 +415,7 @@
 		}
 	}],
 	"host_groups": [{
-		"name": "host_group_1",
+		"name": "client_slave",
 		"cardinality": "1",
 		"components": [{
 			"name": "NAMENODE"
@@ -463,7 +463,7 @@
 			"name": "NFS_GATEWAY"
 		}]
 	}, {
-		"name": "host_group_2",
+		"name": "master_slave_dep",
 		"cardinality": "1",
 		"components": [{
 			"name": "SECONDARY_NAMENODE"
@@ -537,7 +537,7 @@
 			"name": "INFRA_SOLR_CLIENT"
 		}]
 	}, {
-		"name": "host_group_3",
+		"name": "master_only",
 		"cardinality": "1",
 		"components": [{
 			"name": "ZOOKEEPER_SERVER"
@@ -595,7 +595,7 @@
 			"name": "INFRA_SOLR_CLIENT"
 		}]
 	}, {
-		"name": "host_group_4",
+		"name": "master_slave",
 		"cardinality": "1",
 		"components": [{
 			"name": "ZOOKEEPER_SERVER"
