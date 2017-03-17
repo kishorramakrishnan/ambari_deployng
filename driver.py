@@ -155,9 +155,9 @@ def deploy():
     final_blueprint = "conf/blueprint_final.json"
     ssh_utils.run_shell_command("cp conf/blueprint_{0}.json {1}".format(str(cluster_type).strip(),final_blueprint))
     if "yes" in secure:
-        #prepare_host_mapping(agent_hosts, True)
-        #kerberos_utils.install_and_setup_kerberos(ambari_host)
-        #kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
+        prepare_host_mapping(agent_hosts, True)
+        kerberos_utils.install_and_setup_kerberos(ambari_host)
+        kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
         kerberos_utils.update_kdc_params_in_blueprint(final_blueprint, ambari_host, ambari_host, "mit-kdc", "cl1")
     else:
         prepare_host_mapping(agent_hosts, False)
@@ -166,7 +166,7 @@ def deploy():
     ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
     ambari_utils.install_ambari_agent_on_multiple_hosts(agent_hosts)
     ambari_utils.register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
-    register_blueprint("conf/blueprint_final.json",ambari_host,"blueprint-def")
+    register_blueprint(final_blueprint,ambari_host,"blueprint-def")
     deploy_cluster("cl1",ambari_host,"conf/cluster_template.json")
     wait_for_cluster_status("cl1",ambari_host)
 

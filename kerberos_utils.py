@@ -21,7 +21,7 @@ def install_kerberos_client_on_multiple_hosts(hostnames):
         logger.info("Error: unable to start thread")
 
 def install_kerberos_client_on_single_host(host):
-    logger.info("Installing Kerberos clients on host : ",host)
+    logger.info("Installing Kerberos clients on host : {0}".format(host))
     ssh_utils.run_ssh_cmd("user",host,"yum install krb5-workstation -y")
     ssh_utils.run_ssh_cmd("user", host, "yum install unzip -y")
 
@@ -33,7 +33,7 @@ def distribute_JCE_on_multiple_hosts(hostnames):
         for hostname in hostnames:
             logger.info("Setting up JCE on : ", hostname)
             copy_command = ""
-            ssh_utils.run_shell_command("scp -i /root/ec2-keypair root@{} {}".format(hostname,copy_command))
+            ssh_utils.run_shell_command("scp -i /root/ec2-keypair root@{0} {1}".format(hostname,copy_command))
 
     except:
         logger.info("Error: unable to start thread")
