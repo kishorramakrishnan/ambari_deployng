@@ -11,7 +11,7 @@ def install_kerberos_client_on_multiple_hosts(hostnames):
     try:
         for hostname in hostnames:
             logger.info("Setting up repo on : {0}".format(hostname))
-            setup_thread = Thread(target=install_kerberos_client_on_single_host, args=(hostname))
+            setup_thread = Thread(target=install_kerberos_client_on_single_host, args=(hostname,))
             setup_thread.daemon = True
             setup_thread.start()
             setup_thread.join(timeout=30)
