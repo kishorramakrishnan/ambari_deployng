@@ -660,13 +660,8 @@
 		}, {
 			"name": "INFRA_SOLR_CLIENT"
 		}]
-	}, {
-		"name": "add-host",
-		"cardinality": "1",
-		"components": [{
-			"name": "LOGSEARCH_LOGFEEDER"
-		}]
-	}],
+	 }
+	],
 	"Blueprints": {
 		"blueprint_name": "blueprint-def",
 		"stack_name": "HDP",
