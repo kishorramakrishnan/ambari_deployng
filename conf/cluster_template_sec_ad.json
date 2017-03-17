@@ -1,0 +1,23 @@
+{"credentials":[{"alias":"kdc.admin.credential","principal":"ambariqatest@HWQE.HORTONWORKS.COM","key":"Horton!#works","type":"TEMPORARY"}],"security":{"type":"KERBEROS","kerberos_descriptor":{"identities":[{"name":"smokeuser","principal":{"value":"smokeuserNp2FFINjCgbwh6TRyZAb7@${realm}","type":"user"}}],"services":[{"components":[],"name":"SPARK","identities":[{"name":"sparkuser","principal":{"value":"sparkuserf7qprN7na6LxjJqFVf2g2@${realm}","type":"user"}}]},{"components":[],"name":"ZEPPELIN","identities":[{"name":"zeppelin_user","principal":{"value":"zeppelin_userLdTQCiilh4yAknQtY@${realm}","type":"user"}}]},{"components":[{"name":"NAMENODE","identities":[{"name":"hdfs","principal":{"value":"hdfsDZnSgIIbiy2gzZ8BdRqBP8CNG7@${realm}","type":"user"}}]}],"name":"HDFS","identities":[]},{"components":[],"name":"HBASE","identities":[{"name":"hbase","principal":{"value":"hbaseJDTY3pPE7nWvIc3pugxm50wlQ@${realm}","type":"user"}}]},{"components":[],"name":"STORM","identities":[{"name":"storm_components","principal":{"value":"storm_componentsl6d3W6ffmrKx8U@${realm}","type":"user"}}]},{"components":[{"name":"AMBARI_SERVER","identities":[{"name":"ambari-server","principal":{"value":"ambari-serverT5XLXDwmCk6LkGr3k@${realm}","type":"user"}}]}],"name":"AMBARI","identities":[]}]}},"blueprint":"blueprint-def","default_password":"password","config_recommendation_strategy":"ALWAYS_APPLY_DONT_OVERRIDE_CUSTOM_VALUES","host_groups": [{
+                "name": "client_slave",
+                "hosts": [{
+                        "client_slave_fqdns":""
+                }]
+        }, {
+                "name": "master_slave_dep",
+                "hosts": [{
+                        "master_slave_dep_fqdns":""
+                }]
+        }, {
+                "name": "master_only",
+                "hosts": [{
+                        "master_only_fqdns":""
+                }]
+        },{
+                "name": "master_slave",
+                "hosts": [{
+                        "master_slave_fqdns":""
+                }]
+        }
+        ]
+}

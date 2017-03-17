@@ -14,10 +14,14 @@ from log_utils import get_logger
 
 logger = get_logger(__name__)
 
-def prepare_host_mapping(agent_hosts):
+def prepare_host_mapping(agent_hosts, is_secure):
     logger.info("Assigning hosts to Groups {0}".format(agent_hosts))
-    ssh_utils.run_shell_command("cp conf/cluster_host_groups.json conf/cluster_host_groups_runtime.json")
-
+    if is_secure:
+        logger.info("Secure Cluster")
+    	ssh_utils.run_shell_command("cp conf/cluster_template_sec_mit.json conf/cluster_template.json")
+    else:
+        logger.info("Unsecure Cluster")
+        ssh_utils.run_shell_command("cp conf/cluster_template_unsec.json conf/cluster_template.json")
     total_hosts = len(agent_hosts)
     #TODO : Change the number to 5 once we arrive at solution to include DB host( one host is dedicated for DB)
     if total_hosts < 4 :
@@ -48,7 +52,7 @@ def prepare_host_mapping(agent_hosts):
     logger.info("master_slave_fqdns {0}".format(master_slave_fqdns))
     
     #Replace the json content
-    with open('conf/cluster_host_groups_runtime.json', 'r+') as file:
+    with open('conf/cluster_template.json', 'r+') as file:
     	hosts_json_content = file.read()
    	file.seek(0)
     	hosts_json_content=hosts_json_content.replace('\"client_slave_fqdns\":\"\"', client_slave_fqdns)
@@ -144,21 +148,19 @@ def deploy():
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
     if "yes" in secure:
-        #TODO: Use prepare_host_mapping(agent_hosts)
-        prepare_configs(agent_hosts, True)
+        prepare_host_mapping(agent_hosts, True)
         kerberos_utils.install_and_setup_kerberos()
         kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
     else:
-        prepare_host_mapping(agent_hosts)
+        prepare_host_mapping(agent_hosts, False)
     ambari_host = agent_hosts[0]
     mysql_utils.install_and_setup_mysql_connector()
     ambari_utils.restart_ambari_server(ambari_host)
     ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
     ambari_utils.install_ambari_agent_on_multiple_hosts(agent_hosts)
     ambari_utils.register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
-    #prepare_host_mapping(agent_hosts)
     register_blueprint("conf/blueprint_{0}.json".format(str(cluster_type).strip()),ambari_host,"blueprint-def")
-    deploy_cluster("cl1",ambari_host,"conf/cluster_host_groups_runtime.json")
+    deploy_cluster("cl1",ambari_host,"conf/cluster_template.json")
     wait_for_cluster_status("cl1",ambari_host)
 
 if __name__ == "__main__":
