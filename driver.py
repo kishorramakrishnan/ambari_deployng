@@ -93,7 +93,7 @@ def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     logger.info("Deploy cluster using REST API")
     create_cluster = requests_util.post_api_call("http://{0}:8080/api/v1/clusters/{1}".format(ambari_server_host,cluster_name),cluster_json)
     logger.info("Command executed : {0} ".format(str(create_cluster.status_code)))
-    if create_cluster.status_code !=200:
+    if create_cluster.status_code !=202:
         logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(create_cluster.status_code,"logs/deploy.log"))
         logger.error(create_cluster.json())
         exit()
@@ -113,7 +113,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
                     time.sleep(60)
                 elif "FAILED" in deploy_status_value:
                     logger.info("Deploy Failed")
-                    logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(deploy_status.returncode, "logs/deploy.log"))
+                    logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(deploy_status.status_code, "logs/deploy.log"))
                     exit()
                     break
                 elif "COMPLETED" in deploy_status_value:
@@ -127,7 +127,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
             logger.error("Something wrong : Cluster Deploy failed {0} {1}".format(cluster_requests.status_code, cluster_requests.json()))
     except Exception,e:
         logger.error("BP creation API failed {0}".format(e))
-    logger.info("Command executed : {0} ".format(deploy_status.returncode))
+    logger.info("Command executed : {0} ".format(deploy_status.status_code))
 
 #setupAmbariServer("oracle","XE","admin","admin","localhost","1521")
 #setup_ambari_repo("172.27.24.196","http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
@@ -147,13 +147,13 @@ def deploy():
     hosts_file = open("/root/hosts","r")
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
+    ambari_host = agent_hosts[0]
     if "yes" in secure:
         prepare_host_mapping(agent_hosts, True)
         kerberos_utils.install_and_setup_kerberos()
         kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
     else:
         prepare_host_mapping(agent_hosts, False)
-    ambari_host = agent_hosts[0]
     mysql_utils.install_and_setup_mysql_connector()
     ambari_utils.restart_ambari_server(ambari_host)
     ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
