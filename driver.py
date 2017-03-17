@@ -150,7 +150,7 @@ def deploy():
     ambari_host = agent_hosts[0]
     if "yes" in secure:
         prepare_host_mapping(agent_hosts, True)
-        kerberos_utils.install_and_setup_kerberos()
+        kerberos_utils.install_and_setup_kerberos(ambari_host)
         kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
     else:
         prepare_host_mapping(agent_hosts, False)
