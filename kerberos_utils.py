@@ -22,8 +22,8 @@ def install_kerberos_client_on_multiple_hosts(hostnames):
 
 def install_kerberos_client_on_single_host(host):
     logger.info("Installing Kerberos clients on host : {0}".format(host))
-    ssh_utils.run_ssh_cmd("user",host,"yum install krb5-workstation -y")
-    ssh_utils.run_ssh_cmd("user", host, "yum install unzip -y")
+    ssh_utils.run_ssh_cmd("root",host,"yum install krb5-workstation -y")
+    ssh_utils.run_ssh_cmd("root", host, "yum install unzip -y")
 
 def distribute_JCE_on_multiple_hosts(hostnames):
     print "Installing JCE on multiple hosts"
@@ -48,7 +48,7 @@ def install_and_setup_kerberos(kdc_host):
 
 
 def update_kdc_params_in_blueprint(blueprint_file,kdc_host,ambari_server_host,kdc_type,cluster_name):
-    logger.info("Updating KDC properties in blueprint {}".format(blueprint_file))
+    logger.info("Updating KDC properties in blueprint {0}".format(blueprint_file))
     if "mit" in kdc_type:
         logger.info("KDC is {}".format(kdc_type))
         ssh_utils.run_shell_command("sed -i 's/KDC_TYPE_PLACEHOLDER/{0}/g' {1}".format(kdc_type,blueprint_file))
