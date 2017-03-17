@@ -400,8 +400,8 @@
 			"properties": {
 				"realm": "EXAMPLE.COM",
 				"kdc_type": "mit-kdc",
-				"kdc_hosts": "ctr-e129-1487033772569-43080-01-000005.hwx.site",
-				"admin_server_host": "ctr-e129-1487033772569-43080-01-000005.hwx.site",
+				"kdc_hosts": "%HOSTGROUP::client_slave%",
+				"admin_server_host": "%HOSTGROUP::client_slave%",
 				"encryption_types": "aes des3-cbc-sha1 rc4 des-cbc-md5",
 				"service_check_principal_name": "cl1-h0PJU1GIB5"
 			}
@@ -660,13 +660,8 @@
 		}, {
 			"name": "INFRA_SOLR_CLIENT"
 		}]
-	}, {
-		"name": "add-host",
-		"cardinality": "1",
-		"components": [{
-			"name": "LOGSEARCH_LOGFEEDER"
-		}]
-	}],
+	 }
+	],
 	"Blueprints": {
 		"blueprint_name": "blueprint-def",
 		"stack_name": "HDP",
