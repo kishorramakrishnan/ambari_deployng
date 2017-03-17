@@ -6,7 +6,7 @@ import kerberos_utils
 import requests_util
 import ambari_utils
 import json
-
+import os
 #Setup Ambari Server on the gateway host. Exit if something fails
 
 import ssh_utils
@@ -105,6 +105,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
             total_wait_time_in_seconds = 3600
             elapsed_time = 0
             while elapsed_time < total_wait_time_in_seconds:
+                time.sleep(60)
                 deploy_status = requests_util.get_api_call("http://{0}:8080/api/v1/clusters/{1}/requests/1".format(ambari_server_host,cluster_name))
                 deploy_status_value = deploy_status.json()['Requests']['request_status']
                 logger.debug("Status : {0}".format(deploy_status_value))
@@ -142,16 +143,22 @@ def deploy():
     cluster_type = sys.argv[1]
     secure = sys.argv[2]
     print "Cluster Type is : "+ cluster_type
+    if not os.path.isfile("conf/blueprint_{0}.json".format(cluster_type)):
+        logger.error("Invalid configuration Cluster Type : {0} Blueprint Does Not Exists. Recheck configuration or create a new blueprint under conf/ folder with format blueprint_{cluster_type} Exiting now!".format(cluster_type))
+        exit()
     set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
     set_prop.communicate()
     hosts_file = open("/root/hosts","r")
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
     ambari_host = agent_hosts[0]
+    final_blueprint = "conf/blueprint_final.json"
+    ssh_utils.run_shell_command("cp conf/blueprint_{0}.json {1}".format(str(cluster_type).strip(),final_blueprint))
     if "yes" in secure:
-        prepare_host_mapping(agent_hosts, True)
-        kerberos_utils.install_and_setup_kerberos(ambari_host)
-        kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
+        #prepare_host_mapping(agent_hosts, True)
+        #kerberos_utils.install_and_setup_kerberos(ambari_host)
+        #kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
+        kerberos_utils.update_kdc_params_in_blueprint(final_blueprint, ambari_host, ambari_host, "mit-kdc", "cl1")
     else:
         prepare_host_mapping(agent_hosts, False)
     mysql_utils.install_and_setup_mysql_connector()
@@ -159,7 +166,7 @@ def deploy():
     ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
     ambari_utils.install_ambari_agent_on_multiple_hosts(agent_hosts)
     ambari_utils.register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
-    register_blueprint("conf/blueprint_{0}.json".format(str(cluster_type).strip()),ambari_host,"blueprint-def")
+    register_blueprint("conf/blueprint_final.json",ambari_host,"blueprint-def")
     deploy_cluster("cl1",ambari_host,"conf/cluster_template.json")
     wait_for_cluster_status("cl1",ambari_host)
 

@@ -2,6 +2,8 @@ import ssh_utils
 from log_utils import get_logger
 from threading import Thread
 import subprocess
+import random
+import string
 
 logger = get_logger(__name__)
 
@@ -43,3 +45,17 @@ def install_and_setup_kerberos(kdc_host):
     ssh_utils.run_shell_command("ls -lrt")
     setup_kerberos = subprocess.Popen("./setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     logger.info("Command executed Setup KDC : {0}".format(setup_kerberos.communicate()[1]))
+
+
+def update_kdc_params_in_blueprint(blueprint_file,kdc_host,ambari_server_host,kdc_type,cluster_name):
+    logger.info("Updating KDC properties in blueprint {}".format(blueprint_file))
+    if "mit" in kdc_type:
+        logger.info("KDC is {}".format(kdc_type))
+        ssh_utils.run_shell_command("sed -i 's/KDC_TYPE_PLACEHOLDER/{0}/g' {1}".format(kdc_type,blueprint_file))
+        ssh_utils.run_shell_command("sed -i 's/KDC_HOST_PLACEHOLDER/{0}/g' {1}".format(kdc_host,blueprint_file))
+        ssh_utils.run_shell_command("sed -i 's/KDC_AMBARI_SERVER_PLACEHOLDER/{0}/g' {1}".format(ambari_server_host,blueprint_file))
+        ssh_utils.run_shell_command("sed -i 's/KDC_ENCRYPTION_TYPE_PLACEHOLDER/{0}/g' {1}".format("aes des3-cbc-sha1 rc4 des-cbc-md5",blueprint_file))
+        serv_check_principal = cluster_name+"-"+"".join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(10))
+        ssh_utils.run_shell_command("sed -i 's/KDC_SERVICE_CHECK_PRINICPAL/{0}/g' {1}".format(serv_check_principal,blueprint_file))
+
+

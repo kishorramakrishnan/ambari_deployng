@@ -399,11 +399,11 @@
 		"kerberos-env": {
 			"properties": {
 				"realm": "EXAMPLE.COM",
-				"kdc_type": "mit-kdc",
-				"kdc_hosts": "ctr-e129-1487033772569-43080-01-000005.hwx.site",
-				"admin_server_host": "ctr-e129-1487033772569-43080-01-000005.hwx.site",
-				"encryption_types": "aes des3-cbc-sha1 rc4 des-cbc-md5",
-				"service_check_principal_name": "cl1-h0PJU1GIB5"
+				"kdc_type": "KDC_TYPE_PLACEHOLDER",
+				"kdc_hosts": "KDC_HOST_PLACEHOLDER",
+				"admin_server_host": "KDC_AMBARI_SERVER_PLACEHOLDER",
+				"encryption_types": "KDC_ENCRYPTION_TYPE_PLACEHOLDER",
+				"service_check_principal_name": "KDC_SERVICE_CHECK_PRINICPAL"
 			}
 		}
 	}, {
