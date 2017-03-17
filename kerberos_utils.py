@@ -50,7 +50,7 @@ def install_and_setup_kerberos(kdc_host):
 def update_kdc_params_in_blueprint(blueprint_file,kdc_host,ambari_server_host,kdc_type,cluster_name):
     logger.info("Updating KDC properties in blueprint {0}".format(blueprint_file))
     if "mit" in kdc_type:
-        logger.info("KDC is {}".format(kdc_type))
+        logger.info("KDC is {0}".format(kdc_type))
         ssh_utils.run_shell_command("sed -i 's/KDC_TYPE_PLACEHOLDER/{0}/g' {1}".format(kdc_type,blueprint_file))
         ssh_utils.run_shell_command("sed -i 's/KDC_HOST_PLACEHOLDER/{0}/g' {1}".format(kdc_host,blueprint_file))
         ssh_utils.run_shell_command("sed -i 's/KDC_AMBARI_SERVER_PLACEHOLDER/{0}/g' {1}".format(ambari_server_host,blueprint_file))
