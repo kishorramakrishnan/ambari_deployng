@@ -82,14 +82,16 @@ def register_blueprint(blueprint_json,ambari_server_host,blueprint_name):
     logger.info("Register BP response code : {0}".format(register_bp.status_code))
     if register_bp.status_code !=201:
         logger.error("BP registration failed : {0}. Stopping Deploy Now See More logs at {1}".format(register_bp.status_code,"logs/deploy.log"))
+        logger.error(register_bp.json())
         exit()
 
 def deploy_cluster(cluster_name,ambari_server_host,cluster_json):
     logger.info("Deploy cluster using REST API")
     create_cluster = requests_util.post_api_call("http://{0}:8080/api/v1/clusters/{1}".format(ambari_server_host,cluster_name),cluster_json)
-    logger.info("Command executed : {0} ".format(str(create_cluster.returncode)))
+    logger.info("Command executed : {0} ".format(str(create_cluster.status_code)))
     if create_cluster.returncode !=200:
-        logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(create_cluster.returncode,"logs/deploy.log"))
+        logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(create_cluster.status_code,"logs/deploy.log"))
+        logger.error(create_cluster.json())
         exit()
 def wait_for_cluster_status(cluster_name,ambari_server_host):
     logger.info("Waiting for Cluster Deploys status REST API")
