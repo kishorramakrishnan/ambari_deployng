@@ -7,7 +7,7 @@ logger = get_logger(__name__)
 
 def install_kerberos_client_on_multiple_hosts(hostnames):
     print "Installing Kerberos client on multiple hosts"
-    logger.info("Setting up ambari repo on multiple hosts : ", hostnames)
+    logger.info("Setting up ambari repo on multiple hosts : {0}".format(hostnames))
     try:
         for hostname in hostnames:
             logger.info("Setting up repo on : {0}".format(hostname))
@@ -25,7 +25,7 @@ def install_kerberos_client_on_single_host(host):
 
 def distribute_JCE_on_multiple_hosts(hostnames):
     print "Installing JCE on multiple hosts"
-    logger.info("Installing JCE  on multiple hosts : ", hostnames)
+    logger.info("Installing JCE  on multiple hosts : {0}".format(hostnames))
     unzip_command = "unzip -o -j -q /var/lib/ambari-server/resources/UnlimitedJCEPolicyJDK7.zip -d"
     try:
         for hostname in hostnames:

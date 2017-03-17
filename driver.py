@@ -109,7 +109,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
                     time.sleep(60)
                 elif "FAILED" in deploy_status_value:
                     logger.info("Deploy Failed")
-                    logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(deploy_status.returncode, "logs/deploy.log"))
+                    logger.error("Cluster Creation failed {0} Stopping Deploy Now. See more logs at {1}".format(deploy_status.status_code, "logs/deploy.log"))
                     exit()
                     break
                 elif "COMPLETED" in deploy_status_value:
@@ -123,7 +123,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
             logger.error("Something wrong : Cluster Deploy failed {0} {1}".format(cluster_requests.status_code, cluster_requests.json()))
     except Exception,e:
         logger.error("BP creation API failed {0}".format(e))
-    logger.info("Command executed : {0} ".format(deploy_status.returncode))
+    logger.info("Command executed : {0} ".format(deploy_status.status_code))
 
 #setupAmbariServer("oracle","XE","admin","admin","localhost","1521")
 #setup_ambari_repo("172.27.24.196","http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
