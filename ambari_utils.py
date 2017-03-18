@@ -157,5 +157,19 @@ def setup_ambari_repo(hostname, ambari_repo_url):
             logger.info("exception in Setup {0}".format(e))
             command_out.kill()
 
+def provide_log_directory_permissions(hostnames):
+    logger.info("Providing 777 access to /var/log directory")
+    try:
+        for hostname in hostnames:
+            logger.info("Providing log access on host : {0}".format(hostname))
+            setup_thread = Thread(target=run_command_on_single_host, args=("root",hostname, "chmod 777 /var/log/",))
+            setup_thread.daemon = True
+            setup_thread.start()
+    except:
+        logger.info("Error: unable to start thread")
+
+
+def run_command_on_single_host(user,hostname,command):
+    ssh_utils.run_ssh_cmd(user,hostname,command)
 
 

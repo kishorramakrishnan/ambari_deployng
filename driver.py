@@ -163,6 +163,7 @@ def deploy():
     else:
         prepare_host_mapping(agent_hosts, False)
     mysql_utils.install_and_setup_mysql_connector()
+    ambari_utils.provide_log_directory_permissions(agent_hosts)
     ambari_utils.restart_ambari_server(ambari_host)
     ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
     ambari_utils.install_ambari_agent_on_multiple_hosts(agent_hosts)
