@@ -72,7 +72,7 @@
 				"oozie.service.JPAService.jdbc.password": "password",
 				"oozie.service.JPAService.create.db.schema": "false",
 				"oozie.db.schema.name": "ooziedb",
-				"oozie.service.JPAService.jdbc.url": "jdbc:mysql://172.27.25.194/ooziedb",
+				"oozie.service.JPAService.jdbc.url": "jdbc:mysql://DB_HOST_PLACEHOLDER/ooziedb",
 				"oozie.service.JPAService.jdbc.username": "oozieuser",
 				"oozie.service.JPAService.jdbc.driver": "com.mysql.jdbc.Driver",
 				"oozie.email.smtp.password": "",
@@ -95,7 +95,7 @@
 				"oozie_metastore_user_passwd": "password",
 				"oozie_database_type": "mysql",
 				"oozie_existing_mysql_database": "MySQL",
-				"oozie_existing_mysql_host": "172.27.25.194",
+				"oozie_existing_mysql_host": "DB_HOST_PLACEHOLDER",
 				"oozie_database": "Existing MySQL / MariaDB Database",
 				"oozie_user": "cstm-oozie"
 			}
@@ -271,7 +271,7 @@
 				"is_solrCloud_enabled": "true",
 				"is_external_solrCloud_enabled": "false",
 				"is_external_solrCloud_kerberos": "false",
-				"ranger_privelege_user_jdbc_url": "jdbc:mysql://172.27.25.194",
+				"ranger_privelege_user_jdbc_url": "jdbc:mysql://DB_HOST_PLACEHOLDER",
 				"ranger-hdfs-plugin-enabled": "Yes",
 				"ranger-atlas-plugin-enabled": "Yes",
 				"ranger-yarn-plugin-enabled": "Yes",
@@ -401,7 +401,7 @@
 				"DB_FLAVOR": "MYSQL",
 				"db_user": "rangeradmin",
 				"db_name": "ranger",
-				"db_host": "172.27.25.194",
+				"db_host": "DB_HOST_PLACEHOLDER",
 				"SQL_CONNECTOR_JAR": "/usr/share/java/mysql-connector-java.jar"
 			}
 		}
@@ -409,7 +409,7 @@
 		"ranger-admin-site": {
 			"properties": {
 				"ranger.jpa.jdbc.driver": "com.mysql.jdbc.Driver",
-				"ranger.jpa.jdbc.url": "jdbc:mysql://172.27.25.194/ranger",
+				"ranger.jpa.jdbc.url": "jdbc:mysql://DB_HOST_PLACEHOLDER/ranger",
 				"ranger.audit.source.type": "solr"
 			}
 		}
@@ -419,7 +419,7 @@
 				"atlas.cluster.name": "cl1",
 				"atlas.hook.hive.maxThreads": "1",
 				"atlas.hook.hive.minThreads": "1",
-				"javax.jdo.option.ConnectionURL": "jdbc:mysql://172.27.25.194/hivedb?createDatabaseIfNotExist\u003dtrue",
+				"javax.jdo.option.ConnectionURL": "jdbc:mysql://DB_HOST_PLACEHOLDER/hivedb?createDatabaseIfNotExist\u003dtrue",
 				"ambari.hive.db.schema.name": "hivedb",
 				"javax.jdo.option.ConnectionUserName": "hiveuser",
 				"javax.jdo.option.ConnectionDriverName": "com.mysql.jdbc.Driver",
