@@ -1,11 +1,12 @@
 import subprocess
 import time
 import sys
-import mysql_utils
+import db_utils
 import kerberos_utils
 import requests_util
 import ambari_utils
 import json
+import configs_util
 import os
 #Setup Ambari Server on the gateway host. Exit if something fails
 
@@ -153,6 +154,7 @@ def deploy():
     all_hosts = hosts_file.read().splitlines()
     agent_hosts = all_hosts[0:len(all_hosts)-1]
     ambari_host = agent_hosts[0]
+    db_host = all_hosts[len(all_hosts)-1]
     final_blueprint = "conf/blueprint_final.json"
     ssh_utils.run_shell_command("cp conf/blueprint_{0}.json {1}".format(str(cluster_type).strip(),final_blueprint))
     if "yes" in secure:
@@ -162,9 +164,13 @@ def deploy():
         kerberos_utils.update_kdc_params_in_blueprint(final_blueprint, ambari_host, ambari_host, "mit-kdc", "cl1")
     else:
         prepare_host_mapping(agent_hosts, False)
-    mysql_utils.install_and_setup_mysql_connector()
+    db_utils.install_and_setup_mysql_connector()
+    configs_util.setup_ranger_policy_url(ambari_host,final_blueprint)
     ambari_utils.provide_log_directory_permissions(agent_hosts)
     ambari_utils.restart_ambari_server(ambari_host)
+    db_utils.setup_hive_db(db_host)
+    db_utils.setup_oozie_db(db_host)
+    db_utils.setup_ranger_db(db_host)
     ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
     ambari_utils.install_ambari_agent_on_multiple_hosts(agent_hosts)
     ambari_utils.register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
