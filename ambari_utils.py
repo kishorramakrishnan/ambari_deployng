@@ -17,13 +17,16 @@ def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_por
 #Setup ambari repo on multiple hosts
 def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
     logger.info("Setting up ambari repo on multiple hosts : {0}".format(hostnames))
+    thread_list = []
     try:
         for hostname in hostnames:
             logger.info("Setting up repo on : {0}".format(hostname))
             setup_thread = Thread(target=setup_ambari_repo, args=(hostname, repo_url,))
             setup_thread.daemon = True
             setup_thread.start()
-            setup_thread.join(timeout=30)
+            thread_list.append(setup_thread)
+        for thread in thread_list:
+            thread.join(timeout=30)
     except:
         logger.info("Error: unable to start thread")
 
@@ -31,24 +34,30 @@ def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
 #Installing ambari-agent on multiple hosts
 def install_ambari_agent_on_multiple_hosts(hostnames):
     logger.info("Installing ambari agent on multiple hosts")
+    thread_list = []
     try:
         for hostname in hostnames:
             install_thread = Thread(target=install_ambari_agent_on_single_host,args=(hostname,))
             install_thread.daemon=True
             install_thread.start()
-            install_thread.join()
+            thread_list.append(install_thread)
+        for thread in thread_list:
+            thread.join()
     except:
         logger.info("Error: unable to start thread")
 
 #Starting ambari-agent on multiple hosts
 def start_ambari_agent_on_multiple_hosts(hostnames):
     logger.info("Installing ambari agent on multiple hosts")
+    thread_list = []
     try:
         for hostname in hostnames:
             start_thread = Thread(target=start_ambari_agent_on_single_host, args=(hostname))
             start_thread.daemon=True
             start_thread.start()
-            start_thread.join()
+            thread_list.append(start_thread)
+        for thread in thread_list:
+            thread.join()
     except:
         logger.info("Error: unable to start thread")
         raise "Ambari-agents not started properly"
@@ -56,12 +65,15 @@ def start_ambari_agent_on_multiple_hosts(hostnames):
 # Starting ambari-agent on multiple hosts
 def register_and_start_ambari_agent_on_multiple_hosts(hostnames,server_host):
     logger.info("Resgistering and starting ambari agent on multiple hosts")
+    thread_list = []
     try:
         for hostname in hostnames:
             start_thread = Thread(target=register_ambari_agent_on_single_host, args=(hostname,server_host))
             start_thread.daemon=True
             start_thread.start()
-            start_thread.join()
+            thread_list.append(start_thread)
+        for thread in thread_list:
+            thread.join()
     except:
         logger.info("Error: unable to start thread")
         raise "Ambari-agents not started properly"
