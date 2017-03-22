@@ -168,6 +168,11 @@ def provide_log_directory_permissions(hostnames):
     except:
         logger.info("Error: unable to start thread")
 
+def setup_ambari_server_after_ranger_setup(hostname,db_type):
+    logger.info("Ambari setup after ranger setup onb host {0}".format(hostname))
+    if "mysql" in db_type:
+        jdbc_connector_path = "/usr/share/java/mysql-connector-java.jar"
+        ssh_utils.run_shell_command("ambari-server setup --jdbc-db=mysql --jdbc-driver={0}".format(jdbc_connector_path))
 
 def run_command_on_single_host(user,hostname,command):
     ssh_utils.run_ssh_cmd(user,hostname,command)
