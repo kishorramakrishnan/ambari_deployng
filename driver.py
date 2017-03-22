@@ -102,12 +102,12 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
     logger.info("Waiting for Cluster Deploys status REST API")
     deploy_status="NOT STARTED"
     try:
+        time.sleep(60)
         cluster_requests = requests_util.get_api_call("http://{0}:8080/api/v1/clusters/{1}/requests/1".format(ambari_server_host,cluster_name))
         if cluster_requests.status_code == 200:
             total_wait_time_in_seconds = 3600
             elapsed_time = 0
             while elapsed_time < total_wait_time_in_seconds:
-                time.sleep(60)
                 deploy_status = requests_util.get_api_call("http://{0}:8080/api/v1/clusters/{1}/requests/1".format(ambari_server_host,cluster_name))
                 deploy_status_value = deploy_status.json()['Requests']['request_status']
                 logger.debug("Status : {0}".format(deploy_status_value))
