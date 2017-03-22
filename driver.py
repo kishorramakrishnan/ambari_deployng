@@ -144,6 +144,7 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
 def deploy():
     cluster_type = sys.argv[1]
     secure = sys.argv[2]
+    hdp_base_url = sys.argv[3]
     print "Cluster Type is : "+ cluster_type
     if not os.path.isfile("conf/blueprint_{0}.json".format(cluster_type)):
         logger.error("Invalid configuration Cluster Type : {0} Blueprint Does Not Exists. Recheck configuration or create a new blueprint under conf/ folder with format blueprint_{cluster_type} Exiting now!".format(cluster_type))
@@ -170,6 +171,7 @@ def deploy():
     db_utils.setup_ranger_db(db_host)
     configs_util.setup_ranger_policy_url(ambari_host,final_blueprint)
     configs_util.update_db_hosts_in_blueprint(db_host,final_blueprint)
+    ambari_utils.register_stack_version(ambari_host,"2.6","redhat6",hdp_base_url)
     ambari_utils.provide_log_directory_permissions(agent_hosts)
     ambari_utils.setup_ambari_server_after_ranger_setup(ambari_host,"mysql")
     ambari_utils.restart_ambari_server(ambari_host)

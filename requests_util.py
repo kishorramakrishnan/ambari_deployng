@@ -15,6 +15,11 @@ def post_api_call(req_url,json_file):
     logger.info(api_resp)
     return api_resp
 
+def put_api_call(req_url,json_file):
+    api_resp = requests.put(req_url, headers=set_ambari_headers(), auth=('admin','admin'), data=open(json_file, 'rb'))
+    logger.info(api_resp)
+    return api_resp
+
 
 def post_api_call_using_json_string(req_url,json_obj):
     api_resp = requests.post(req_url, headers=set_ambari_headers(), auth=('admin','admin'), data=json.dump(json_obj))

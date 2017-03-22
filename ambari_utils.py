@@ -3,8 +3,11 @@ import ssh_utils
 from threading import Thread
 import subprocess
 import platform
+import requests_util
 
 logger = get_logger(__name__)
+final_hdp_repo_file = "conf/hdp_repo_final.json"
+final_hdp_util_repo_file = "conf/hdp_util_repo_final.json"
 
 def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_port):
     setup_command = "ambari-server setup --database={0} --databasehost={1} --databaseport={2} --databasename={3} --databaseusername={4} --databasepassword={5} -s"
@@ -27,6 +30,7 @@ def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
             thread_list.append(setup_thread)
         for thread in thread_list:
             thread.join(timeout=30)
+        logger.info("Setting up ambari repo on multiple hosts : COMPLETED")
     except:
         logger.info("Error: unable to start thread")
 
@@ -43,6 +47,7 @@ def install_ambari_agent_on_multiple_hosts(hostnames):
             thread_list.append(install_thread)
         for thread in thread_list:
             thread.join()
+        logger.info("Installing Ambari Agents on multiple hosts : COMPLETED")
     except:
         logger.info("Error: unable to start thread")
 
@@ -58,6 +63,7 @@ def start_ambari_agent_on_multiple_hosts(hostnames):
             thread_list.append(start_thread)
         for thread in thread_list:
             thread.join()
+        logger.info("Starting Ambari Agents on multiple hosts : COMPLETED")
     except:
         logger.info("Error: unable to start thread")
         raise "Ambari-agents not started properly"
@@ -74,6 +80,7 @@ def register_and_start_ambari_agent_on_multiple_hosts(hostnames,server_host):
             thread_list.append(start_thread)
         for thread in thread_list:
             thread.join()
+        logger.info("Registering Ambari Agents on multiple hosts : COMPLETED")
     except:
         logger.info("Error: unable to start thread")
         raise "Ambari-agents not started properly"
@@ -171,12 +178,17 @@ def setup_ambari_repo(hostname, ambari_repo_url):
 
 def provide_log_directory_permissions(hostnames):
     logger.info("Providing 777 access to /var/log directory")
+    thread_list = []
     try:
         for hostname in hostnames:
             logger.info("Providing log access on host : {0}".format(hostname))
-            setup_thread = Thread(target=run_command_on_single_host, args=("root",hostname, "chmod 777 /var/log/",))
+            setup_thread = Thread(target=run_command_on_single_host, args=("root",hostname, "chmod -R 777 /var/log/",))
             setup_thread.daemon = True
             setup_thread.start()
+            thread_list.append(setup_thread)
+        for thread in thread_list:
+            thread.join()
+        logger.info("Updating /var/log permissions : COMPLETED")
     except:
         logger.info("Error: unable to start thread")
 
@@ -188,5 +200,25 @@ def setup_ambari_server_after_ranger_setup(hostname,db_type):
 
 def run_command_on_single_host(user,hostname,command):
     ssh_utils.run_ssh_cmd(user,hostname,command)
+
+def update_hdp_repo(base_url):
+    ssh_utils.run_shell_command("cp conf/repo.json {1}".format(final_hdp_repo_file))
+    return ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_repo_file))
+
+def update_hdp_util_repo(base_url):
+    ssh_utils.run_shell_command("cp conf/repo.json {1}".format(final_hdp_repo_file))
+    return ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_util_repo_file))
+
+
+def register_stack_version(ambari_host,hdp_version,os_string,hdp_base_url):
+    logger.info("Registering HDP and HDP util stack version")
+    update_hdp_repo(hdp_base_url)
+    register_stack_version_url = "http://{0}:8080/api/v1/stacks/HDP/versions/{1}/operating_systems/{2}/repositories/{3}"
+    register_hdp_stack_version_url = register_stack_version_url.format(ambari_host,hdp_version,os_string,"HDP-"+hdp_version)
+    requests_util.put_api_call(register_hdp_stack_version_url,final_hdp_repo_file)
+
+
+
+
 
 
