@@ -202,11 +202,11 @@ def run_command_on_single_host(user,hostname,command):
     ssh_utils.run_ssh_cmd(user,hostname,command)
 
 def update_hdp_repo(base_url):
-    ssh_utils.run_shell_command("cp conf/repo.json {1}".format(final_hdp_repo_file))
+    ssh_utils.run_shell_command("cp conf/repo.json {0}".format(final_hdp_repo_file))
     return ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_repo_file))
 
 def update_hdp_util_repo(base_url):
-    ssh_utils.run_shell_command("cp conf/repo.json {1}".format(final_hdp_repo_file))
+    ssh_utils.run_shell_command("cp conf/repo.json {0}".format(final_hdp_repo_file))
     return ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_util_repo_file))
 
 
