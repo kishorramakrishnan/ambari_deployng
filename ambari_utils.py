@@ -212,7 +212,7 @@ def update_hdp_util_repo(base_url):
 
 def register_stack_version(ambari_host,hdp_version,os_string,hdp_base_url):
     logger.info("Registering HDP and HDP util stack version")
-    update_hdp_repo(hdp_base_url)
+    update_hdp_repo(hdp_base_url,final_hdp_repo_file)
     register_stack_version_url = "http://{0}:8080/api/v1/stacks/HDP/versions/{1}/operating_systems/{2}/repositories/{3}"
     register_hdp_stack_version_url = register_stack_version_url.format(ambari_host,hdp_version,os_string,"HDP-"+hdp_version)
     requests_util.put_api_call(register_hdp_stack_version_url,final_hdp_repo_file)
