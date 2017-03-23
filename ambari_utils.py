@@ -203,11 +203,15 @@ def run_command_on_single_host(user,hostname,command):
 
 def update_hdp_repo(base_url):
     ssh_utils.run_shell_command("cp conf/repo.json {0}".format(final_hdp_repo_file))
-    ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_repo_file))
+    command = "sed -i 's#BASE_URL_PLACEHOLDER#{0}#g' {1}".format(base_url,final_hdp_repo_file)
+    logger.debug("Command to update HDP BASE URL : {0}".format(command))
+    ssh_utils.run_shell_command(command)
 
 def update_hdp_util_repo(base_url):
     ssh_utils.run_shell_command("cp conf/repo.json {0}".format(final_hdp_repo_file))
-    ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_util_repo_file))
+    command = "sed -i 's#BASE_URL_PLACEHOLDER#{0}#g' {1}".format(base_url,final_hdp_util_repo_file)
+    logger.debug("Command to update HDP BASE URL : {0}".format(command))
+    ssh_utils.run_shell_command(command)
 
 
 def register_stack_version(ambari_host,hdp_version,os_string,hdp_base_url):
