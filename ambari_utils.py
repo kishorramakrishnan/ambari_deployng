@@ -203,16 +203,16 @@ def run_command_on_single_host(user,hostname,command):
 
 def update_hdp_repo(base_url):
     ssh_utils.run_shell_command("cp conf/repo.json {0}".format(final_hdp_repo_file))
-    return ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_repo_file))
+    ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_repo_file))
 
 def update_hdp_util_repo(base_url):
     ssh_utils.run_shell_command("cp conf/repo.json {0}".format(final_hdp_repo_file))
-    return ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_util_repo_file))
+    ssh_utils.run_shell_command("sed -i 's/BASE_URL_PLACEHOLDER/{0}/g' {1}".format(base_url,final_hdp_util_repo_file))
 
 
 def register_stack_version(ambari_host,hdp_version,os_string,hdp_base_url):
     logger.info("Registering HDP and HDP util stack version")
-    update_hdp_repo(hdp_base_url,final_hdp_repo_file)
+    update_hdp_repo(hdp_base_url)
     register_stack_version_url = "http://{0}:8080/api/v1/stacks/HDP/versions/{1}/operating_systems/{2}/repositories/{3}"
     register_hdp_stack_version_url = register_stack_version_url.format(ambari_host,hdp_version,os_string,"HDP-"+hdp_version)
     requests_util.put_api_call(register_hdp_stack_version_url,final_hdp_repo_file)
