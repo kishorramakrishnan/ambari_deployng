@@ -221,6 +221,20 @@ def register_stack_version(ambari_host,hdp_version,os_string,hdp_base_url):
     register_hdp_stack_version_url = register_stack_version_url.format(ambari_host,hdp_version,os_string,"HDP-"+hdp_version)
     requests_util.put_api_call(register_hdp_stack_version_url,final_hdp_repo_file)
 
+def get_ambari_repo_url(os_version):
+    if str(os_version).lower() in ["centos6","rhel6","r6"]:
+        return "http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo"
+    elif str(os_version).lower() in ["centos7","rhel7","r7"]:
+        return "http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos7/2.x/updates/2.5.0.1/ambariqe.repo"
+    else:
+        return "INVALID"
+def get_os_version_string(os_version):
+    if str(os_version).lower() in ["centos6","rhel6","r6"]:
+        return "redhat6"
+    elif str(os_version).lower() in ["centos7","rhel7","r7"]:
+        return "redhat7"
+    else:
+        return "INVALID"
 
 
 

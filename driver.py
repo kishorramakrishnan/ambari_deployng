@@ -144,7 +144,9 @@ def wait_for_cluster_status(cluster_name,ambari_server_host):
 def deploy():
     cluster_type = sys.argv[1]
     secure = sys.argv[2]
-    hdp_base_url = sys.argv[3]
+    os_type = sys.argv[3]
+    hdp_base_url = sys.argv[4]
+
     print "Cluster Type is : "+ cluster_type
     print "HDP BASE URL : " +hdp_base_url
     if not os.path.isfile("conf/blueprint_{0}.json".format(cluster_type)):
@@ -174,10 +176,15 @@ def deploy():
     configs_util.update_db_hosts_in_blueprint(db_host,final_blueprint)
     ambari_utils.setup_ambari_server_after_ranger_setup(ambari_host,"mysql")
     ambari_utils.restart_ambari_server(ambari_host)
-    ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,"http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo")
+    repo_url = ambari_utils.get_ambari_repo_url(os_type)
+    if "INVALID" in repo_url:
+        logger.error("Invalid OS provided in the command :{0}".format(os_type))
+        exit()
+    ambari_utils.setup_ambari_repo_on_multiple_hosts(agent_hosts,repo_url)
     ambari_utils.install_ambari_agent_on_multiple_hosts(agent_hosts)
     ambari_utils.register_and_start_ambari_agent_on_multiple_hosts(agent_hosts,ambari_host)
-    ambari_utils.register_stack_version(ambari_host, "2.6", "redhat6", hdp_base_url)
+    os_version = ambari_utils.get_os_version_string(os_type)
+    ambari_utils.register_stack_version(ambari_host, "2.6", os_version, hdp_base_url)
     ambari_utils.provide_log_directory_permissions(agent_hosts)
     register_blueprint(final_blueprint,ambari_host,"blueprint-def")
     deploy_cluster("cl1",ambari_host,"conf/cluster_template.json")
