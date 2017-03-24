@@ -164,8 +164,9 @@ def get_ambari_server_status(hostname):
 #setup ambari repo
 def setup_ambari_repo(hostname, ambari_repo_url):
     logger.info("Repo setup on single host {0}".format(hostname))
-    logger.info("Platform : "+platform.platform())
-    if platform.platform() in ["Darwin","centos6","rhel6","centos7","rhel7","r6","r7"]:
+    os_name = platform.platform()
+    logger.info("Platform : "+os_name)
+    if "Darwin" in os_name or "centos" in os_name:
         setup_repo_command = "ssh -t -i /root/ec2-keypair root@{0} wget -O /etc/yum.repos.d/ambari.repo {1}".format(hostname,ambari_repo_url)
         logger.info("REPO COMMAND :: > {0}".format(setup_repo_command))
         try:
