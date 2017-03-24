@@ -21,6 +21,7 @@ def setup_ambari_server(db_type, db_name, db_username,db_password,db_host,db_por
 def setup_ambari_repo_on_multiple_hosts(hostnames,repo_url):
     logger.info("Setting up ambari repo on multiple hosts : {0}".format(hostnames))
     thread_list = []
+    logger.info("REPO URL : {0}".format(repo_url))
     try:
         for hostname in hostnames:
             logger.info("Setting up repo on : {0}".format(hostname))
@@ -164,7 +165,7 @@ def get_ambari_server_status(hostname):
 def setup_ambari_repo(hostname, ambari_repo_url):
     logger.info("Repo setup on single host {0}".format(hostname))
     logger.info("Platform : "+platform.platform())
-    if "centos-6" in platform.platform() or "Darwin" in platform.platform():
+    if platform.platform() in ["Darwin","centos6","rhel6","centos7","rhel7","r6","r7"]:
         setup_repo_command = "ssh -t -i /root/ec2-keypair root@{0} wget -O /etc/yum.repos.d/ambari.repo {1}".format(hostname,ambari_repo_url)
         logger.info("REPO COMMAND :: > {0}".format(setup_repo_command))
         try:
