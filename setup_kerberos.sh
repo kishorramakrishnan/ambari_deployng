@@ -5,7 +5,7 @@ install_kerberos()
     echo -e "\n Installing kerberos RPMs"
     yum install krb5-server krb5-libs krb5-auth-dialog rng-tools krb5-workstation -y
     echo -e "\n Configuring Kerberos"
-    if [ $1 -q 'mit' ]
+    if [ $1 -q "mit" ]
     then
         echo "Configuring KRB for MIT"
         cp conf/mit_krb.conf /etc/krb5.conf
