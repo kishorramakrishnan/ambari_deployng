@@ -39,13 +39,14 @@ def distribute_JCE_on_multiple_hosts(hostnames):
         logger.info("Error: unable to start thread")
 
 
-def install_and_setup_kerberos(kdc_host):
+def install_and_setup_kerberos(kdc_type,kdc_host):
     logger.info("Install and setup Kerberos")
     ssh_utils.run_shell_command("chmod 777 setup_kerberos.sh")
     ssh_utils.run_shell_command("ls -lrt")
-    setup_kerberos = subprocess.Popen("./setup_kerberos.sh {0} {1} {2}".format(kdc_host,"admin","admin/admin@EXAMPLE.COM"),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    logger.info("Command executed Setup KDC : {0}".format(setup_kerberos.communicate()[1]))
-
+    if "mit" in kdc_type:
+        setup_kerberos = subprocess.Popen("./setup_kerberos.sh {0} {1} {2} {3}".format("mit",kdc_host,"admin","admin/admin@EXAMPLE.COM"),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        logger.info("Command executed Setup KDC : {0}".format(setup_kerberos.communicate()[1]))
+    logger.info("Install and setup Kerberos : COMPLETED")
 
 def update_kdc_params_in_blueprint(blueprint_file,kdc_host,ambari_server_host,kdc_type,cluster_name):
     logger.info("Updating KDC properties in blueprint {0}".format(blueprint_file))

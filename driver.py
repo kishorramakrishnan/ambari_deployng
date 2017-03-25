@@ -163,7 +163,7 @@ def deploy():
     ssh_utils.run_shell_command("cp conf/blueprint_{0}.json {1}".format(str(cluster_type).strip(),final_blueprint))
     if "yes" in secure:
         prepare_host_mapping(agent_hosts, True)
-        kerberos_utils.install_and_setup_kerberos(ambari_host)
+        kerberos_utils.install_and_setup_kerberos("mit",ambari_host)
         kerberos_utils.install_kerberos_client_on_multiple_hosts(agent_hosts)
         kerberos_utils.update_kdc_params_in_blueprint(final_blueprint, ambari_host, ambari_host, "mit-kdc", "cl1")
     else:
