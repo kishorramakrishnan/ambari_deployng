@@ -5,13 +5,13 @@ install_kerberos()
     echo -e "\n Installing kerberos RPMs"
     yum install krb5-server krb5-libs krb5-auth-dialog rng-tools krb5-workstation -y
     echo -e "\n Configuring Kerberos"
-    if [ $1 -q "mit" ]
+    if [ $1 = "mit" ];
     then
         echo "Configuring KRB for MIT"
         cp conf/mit_krb.conf /etc/krb5.conf
         sed -i "s/ADMIN_HOST_PH/ $2/g" /etc/krb5.conf
         sed -i "s/KDC_HOST_PH/ $2/g" /etc/krb5.conf
-    fi
+    fi;
     chmod 644 /etc/krb5.conf
     cat /etc/krb5.conf
     #TODO : Setup for SUSE And UBUNTU need to be done
