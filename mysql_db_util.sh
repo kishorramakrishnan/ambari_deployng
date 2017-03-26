@@ -48,6 +48,7 @@ setup_ranger_db()
 {
      echo "Dropping mysql db for Ranger"
     mysql -u root<<MYSQL_INPUT
+    grant all privileges on *.* to ambaricustomuser@'%' with grant option;
     grant all privileges on *.* to root@'%' with grant option;
     SET PASSWORD FOR 'root'@'%' = PASSWORD('$1');
     flush privileges;
