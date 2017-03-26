@@ -13,7 +13,7 @@ create_user()
     echo "Creating mysql user $1"
     mysql -u root <<MYSQL_INPUT
     CREATE USER $1@'%' IDENTIFIED BY '$2';
-    GRANT ALL PRIVILEGES ON *.* TO $1@'%';
+    GRANT ALL PRIVILEGES ON *.* TO $1@'%' with grant option;
     FLUSH PRIVILEGES;
 MYSQL_INPUT
 }
