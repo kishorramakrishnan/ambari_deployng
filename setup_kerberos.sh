@@ -25,4 +25,4 @@ install_kerberos()
 
 }
 
-install_kerberos $1 $2 $3
+install_kerberos $1 $2 $3 $4
