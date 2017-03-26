@@ -534,8 +534,6 @@
 		}, {
 			"name": "RANGER_TAGSYNC"
 		}, {
-			"name": "RANGER_KMS_SERVER"
-		}, {
 			"name": "KNOX_GATEWAY"
 		}, {
 			"name": "HBASE_MASTER"
