@@ -10,13 +10,17 @@ logger = get_logger(__name__)
 def install_kerberos_client_on_multiple_hosts(hostnames):
     print "Installing Kerberos client on multiple hosts"
     logger.info("Setting up ambari repo on multiple hosts : {0}".format(hostnames))
+    thread_list = []
     try:
         for hostname in hostnames:
             logger.info("Setting up repo on : {0}".format(hostname))
             setup_thread = Thread(target=install_kerberos_client_on_single_host, args=(hostname,))
             setup_thread.daemon = True
             setup_thread.start()
-            setup_thread.join(timeout=30)
+            thread_list.append(setup_thread)
+        for thread in thread_list:
+            thread.join(timeout=30)
+        logger.info("Installing Kerberos Clients on All machines : COMPLETED")
     except:
         logger.info("Error: unable to start thread")
 
