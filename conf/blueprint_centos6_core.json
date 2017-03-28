@@ -1,0 +1,542 @@
+{
+  "configurations": [
+    {
+      "cluster-env": {
+        "properties": {
+          "command_retry_max_time_in_sec": "1200"
+        }
+      }
+    },
+    {
+      "mapred-env": {
+        "properties": {
+          "mapreduce_log_dir_prefix": "/grid/0/log/hadoop-mapreduce",
+          "mapred_log_dir_prefix": "/grid/0/log/hadoop-mapreduce"
+        }
+      }
+    },
+    {
+      "hdfs-site": {
+        "properties": {
+          "dfs.datanode.data.dir": "/grid/0/hadoop/hdfs/data",
+          "dfs.namenode.name.dir": "/grid/0/hadoop/hdfs/namenode",
+          "dfs.namenode.checkpoint.dir": "/grid/0/hadoop/hdfs/namesecondary",
+          "dfs.journalnode.edits.dir": "/grid/0/hadoop/hdfs/journal",
+          "dfs.namenode.http-address": "%HOSTGROUP::client_slave%:20070",
+          "dfs.datanode.https.address": "0.0.0.0:20475",
+          "dfs.support.append": "true",
+          "dfs.namenode.inode.attributes.provider.class": "org.apache.ranger.authorization.hadoop.RangerHdfsAuthorizer",
+          "nfs.udp.client.portmap.timeout.millis": "5000",
+          "dfs.namenode.secondary.http-address": "%HOSTGROUP::master_slave_dep%:20090"
+        }
+      }
+    },
+    {
+      "core-site": {
+        "properties": {
+          "io.compression.codec.lzo.class": "com.hadoop.compression.lzo.LzoCodec",
+          "io.compression.codecs": "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.SnappyCodec,com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec",
+          "hadoop.proxyuser.hdfs.groups": "*",
+          "hadoop.proxyuser.hdfs.hosts": "*"
+        }
+      }
+    },
+    {
+      "hadoop-env": {
+        "properties": {
+          "hdfs_log_dir_prefix": "/grid/0/log/hdfs",
+          "namenode_heapsize": "1500"
+        }
+      }
+    },
+    {
+      "ranger-hdfs-plugin-properties": {
+        "properties": {
+          "REPOSITORY_CONFIG_USERNAME": "hadoop",
+          "common.name.for.certificate": "-",
+          "policy_user": "ambari-qa",
+          "ranger-hdfs-plugin-enabled": "Yes"
+        }
+      }
+    },
+    {
+      "oozie-site": {
+        "properties": {
+          "oozie.service.JPAService.jdbc.password": "password"
+        }
+      }
+    },
+    {
+      "oozie-env": {
+        "properties": {
+          "oozie_log_dir": "/grid/0/log/oozie"
+        }
+      }
+    },
+    {
+      "livy-env": {
+        "properties": {
+          "livy_log_dir": "/grid/0/log/livy"
+        }
+      }
+    },
+    {
+      "hbase-env": {
+        "properties": {
+          "hbase_log_dir": "/grid/0/log/hbase"
+        }
+      }
+    },
+    {
+      "hbase-site": {
+        "properties": {
+          "hbase.master.info.port": "30010",
+          "hbase.regionserver.info.port": "20030",
+          "hbase.master.port": "20000"
+        }
+      }
+    },
+    {
+      "zookeeper-env": {
+        "properties": {
+          "zk_log_dir": "/grid/0/log/zookeeper"
+        }
+      }
+    },
+    {
+      "zoo.cfg": {
+        "properties": {
+          "dataDir": "/grid/0/hadoop/zookeeper",
+          "tickTime": "4500"
+        }
+      }
+    },
+    {
+      "yarn-site": {
+        "properties": {
+          "yarn.nodemanager.delete.debug-delay-sec": "3600",
+          "yarn.nodemanager.local-dirs": "/grid/0/hadoop/yarn/local",
+          "yarn.nodemanager.log-dirs": "/grid/0/hadoop/yarn/log",
+          "yarn.timeline-service.leveldb-state-store.path": "/grid/0/hadoop/yarn/timeline",
+          "yarn.timeline-service.leveldb-timeline-store.path": "/grid/0/hadoop/yarn/timeline",
+          "yarn.nodemanager.address": "0.0.0.0:25454",
+          "yarn.authorization-provider": "org.apache.ranger.authorization.yarn.authorizer.RangerYarnAuthorizer"
+        }
+      }
+    },
+    {
+      "yarn-env": {
+        "properties": {
+          "yarn_log_dir_prefix": "/grid/0/log/yarn"
+        }
+      }
+    },
+    {
+      "ranger-yarn-plugin-properties": {
+        "properties": {
+          "ranger-yarn-plugin-enabled": "Yes",
+          "REPOSITORY_CONFIG_USERNAME": "yarn",
+          "common.name.for.certificate": "-",
+          "policy_user": "ambari-qa"
+        }
+      }
+    },
+    {
+      "capacity-scheduler": {
+        "properties": {
+          "yarn.scheduler.capacity.maximum-am-resource-percent": "0.4"
+        }
+      }
+    },
+    {
+      "atlas-env": {
+        "properties": {
+          "metadata_log_dir": "/grid/0/log/atlas"
+        }
+      }
+    },
+    {
+      "storm-env": {
+        "properties": {
+          "storm_log_dir": "/grid/0/log/storm",
+          "jmxremote_port": "26431"
+        }
+      }
+    },
+    {
+      "admin-properties": {
+        "properties": {
+          "db_root_password": "mysql",
+          "audit_db_password": "rangerlogger",
+          "db_password": "rangeradmin",
+          "audit_db_user": "rangerlogger",
+          "policymgr_external_url": "http://POLICY_URL_PLACEHOLDER:6080",
+          "db_root_user": "root",
+          "audit_db_name": "ranger_audit",
+          "DB_FLAVOR": "MYSQL",
+          "db_user": "rangeradmin",
+          "db_name": "ranger",
+          "db_host": "DB_HOST_PLACEHOLDER",
+          "SQL_CONNECTOR_JAR": "/usr/share/java/mysql-connector-java.jar"
+        }
+      }
+    },
+    {
+      "ranger-env": {
+        "properties": {
+          "ranger_admin_password": "rangerpassword",
+          "ranger_privelege_user_jdbc_url": "jdbc:mysql://DB_HOST_PLACEHOLDER",
+          "ranger-hdfs-plugin-enabled": "Yes",
+          "ranger-yarn-plugin-enabled": "Yes"
+        }
+      }
+    },
+    {
+      "ranger-admin-site": {
+        "properties": {
+          "ranger.jpa.jdbc.driver": "com.mysql.jdbc.Driver",
+          "ranger.audit.solr.urls": "http://DB_HOST_PLACEHOLDER:6083/solr/ranger_audits",
+          "ranger.jpa.jdbc.url": "jdbc:mysql://DB_HOST_PLACEHOLDER/ranger",
+          "ranger.audit.source.type": "solr"
+        }
+      }
+    },
+    {
+      "hive-site": {
+        "properties": {
+          "atlas.cluster.name": "cl1",
+          "atlas.hook.hive.maxThreads": "1",
+          "atlas.hook.hive.minThreads": "1"
+        }
+      }
+    },
+    {
+      "hive-env": {
+        "properties": {
+          "hcat_log_dir": "/grid/0/log/webhcat",
+          "hive_log_dir": "/grid/0/log/hive"
+        }
+      }
+    },
+    {
+      "webhcat-site": {
+        "properties": {
+          "templeton.port": "20111"
+        }
+      }
+    },
+    {
+      "ams-hbase-site": {
+        "properties": {
+          "hbase.rootdir": "file:///grid/0/lib/ambari-metrics-collector/hbase",
+          "hbase.tmp.dir": "/grid/0/lib/ambari-metrics-collector/hbase-tmp"
+        }
+      }
+    },
+    {
+      "ams-hbase-env": {
+        "properties": {
+          "hbase_log_dir": "/grid/0/log/metric_collector"
+        }
+      }
+    },
+    {
+      "ams-env": {
+        "properties": {
+          "metrics_collector_log_dir": "/grid/0/log/metric_collector",
+          "metrics_monitor_log_dir": "/grid/0/log/metric_monitor"
+        }
+      }
+    },
+    {
+      "ams-site": {
+        "properties": {
+          "timeline.metrics.service.rpc.address": "0.0.0.0:20200"
+        }
+      }
+    },
+    {
+      "ams-grafana-env": {
+        "properties": {
+          "metrics_grafana_password": "admin"
+        }
+      }
+    },
+    {
+      "infra-solr-client-log4j": {
+        "properties": {
+          "infra_solr_client_log_dir": "/grid/0/log/ambari-infra-solr-client"
+        }
+      }
+    },
+    {
+      "zeppelin-env": {
+        "properties": {
+          "zeppelin_log_dir": "/grid/0/log/zeppelin"
+        }
+      }
+    },
+    {
+      "flume-env": {
+        "properties": {
+          "flume_log_dir": "/grid/0/log/flume"
+        }
+      }
+    },
+    {
+      "logfeeder-env": {
+        "properties": {
+          "logfeeder_log_dir": "/grid/0/log/ambari-logsearch-logfeeder"
+        }
+      }
+    },
+    {
+      "logsearch-env": {
+        "properties": {
+          "logsearch_log_dir": "/grid/0/log/ambari-logsearch-portal"
+        }
+      }
+    },
+    {
+      "kafka-env": {
+        "properties": {
+          "kafka_log_dir": "/grid/0/log/kafka"
+        }
+      }
+    },
+    {
+      "falcon-env": {
+        "properties": {
+          "falcon_log_dir": "/grid/0/log/falcon"
+        }
+      }
+    },
+    {
+      "activity-log4j": {
+        "properties": {
+          "activity_log_dir": "/grid/0/log/smartsense-activity"
+        }
+      }
+    },
+    {
+      "hst-agent-conf": {
+        "properties": {
+          "server.connection_retry_interval": "7",
+          "server.connection_retry_count": "500"
+        }
+      }
+    },
+    {
+      "hst-server-conf": {
+        "properties": {
+          "customer.smartsense.id": "A-00000000-C-00000000",
+          "customer.notification.email": "abcqe@hortonworks.com",
+          "customer.account.name": "Hortonworks"
+        }
+      }
+    },
+    {
+      "activity-zeppelin-shiro": {
+        "properties": {
+          "users.admin": "admin"
+        }
+      }
+    },
+    {
+		"kerberos-env": {
+			"properties": {
+				"realm": "EXAMPLE.COM",
+				"kdc_type": "KDC_TYPE_PLACEHOLDER",
+				"kdc_hosts": "KDC_HOST_PLACEHOLDER",
+				"admin_server_host": "KDC_AMBARI_SERVER_PLACEHOLDER",
+				"encryption_types": "KDC_ENCRYPTION_TYPE_PLACEHOLDER",
+				"service_check_principal_name": "KDC_SERVICE_CHECK_PRINICPAL"
+			}
+		}
+	},
+    {
+      "krb5-conf": {
+        "properties": {
+          "domains": "l42scl.hortonworks.com,.l42scl.hortonworks.com",
+          "manage_krb5_conf": "true"
+        }
+      }
+    }
+  ],
+  "host_groups": [
+    {
+      "name": "client_slave",
+      "cardinality": "1",
+      "components": [
+        {
+          "name": "NAMENODE"
+        },
+        {
+          "name": "RANGER_ADMIN"
+        },
+        {
+          "name": "RESOURCEMANAGER"
+        },
+        {
+          "name": "HDFS_CLIENT"
+        },
+        {
+          "name": "YARN_CLIENT"
+        },
+        {
+          "name": "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name": "ZOOKEEPER_CLIENT"
+        },
+        {
+          "name": "TEZ_CLIENT"
+        },
+        {
+          "name": "HST_AGENT"
+        },
+        {
+          "name": "METRICS_MONITOR"
+        },
+        {
+          "name": "NFS_GATEWAY"
+        }
+      ]
+    },
+    {
+      "name": "master_slave_dep",
+      "cardinality": "1",
+      "components": [
+        {
+          "name": "SECONDARY_NAMENODE"
+        },
+        {
+          "name": "RANGER_USERSYNC"
+        },
+        {
+          "name": "RANGER_TAGSYNC"
+        },
+        {
+          "name": "ZOOKEEPER_SERVER"
+        },
+        {
+          "name": "HISTORYSERVER"
+        },
+        {
+          "name": "ACTIVITY_EXPLORER"
+        },
+        {
+          "name": "ACTIVITY_ANALYZER"
+        },
+        {
+          "name": "HST_SERVER"
+        },
+        {
+          "name": "APP_TIMELINE_SERVER"
+        },
+        {
+          "name": "DATANODE"
+        },
+        {
+          "name": "NFS_GATEWAY"
+        },
+        {
+          "name": "HDFS_CLIENT"
+        },
+        {
+          "name": "NODEMANAGER"
+        },
+        {
+          "name": "YARN_CLIENT"
+        },
+        {
+          "name": "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name": "ZOOKEEPER_CLIENT"
+        },
+        {
+          "name": "METRICS_MONITOR"
+        },
+        {
+          "name": "TEZ_CLIENT"
+        },
+        {
+          "name": "HST_AGENT"
+        }
+      ]
+    },
+    {
+      "name": "master_only",
+      "cardinality": "1",
+      "components": [
+        {
+          "name": "ZOOKEEPER_SERVER"
+        },
+        {
+          "name": "METRICS_COLLECTOR"
+        },
+        {
+          "name": "METRICS_GRAFANA"
+        },
+        {
+          "name": "DATANODE"
+        },
+        {
+          "name": "NFS_GATEWAY"
+        },
+        {
+          "name": "HDFS_CLIENT"
+        },
+        {
+          "name": "NODEMANAGER"
+        },
+        {
+          "name": "YARN_CLIENT"
+        },
+        {
+          "name": "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name": "ZOOKEEPER_CLIENT"
+        },
+        {
+          "name": "METRICS_MONITOR"
+        },
+        {
+          "name": "TEZ_CLIENT"
+        },
+        {
+          "name": "HST_AGENT"
+        }
+      ]
+    },
+    {
+      "name": "master_slave",
+      "cardinality": "1",
+      "components": [
+        {
+          "name": "HDFS_CLIENT"
+        },
+        {
+          "name": "YARN_CLIENT"
+        },
+        {
+          "name": "MAPREDUCE2_CLIENT"
+        },
+        {
+          "name": "ZOOKEEPER_CLIENT"
+        },
+        {
+          "name": "TEZ_CLIENT"
+        }
+      ]
+    }
+  ],
+  "Blueprints": {
+    "blueprint_name": "blueprint-def",
+    "stack_name": "HDP",
+    "stack_version": "2.6"
+  },
+  "settings": []
+}
