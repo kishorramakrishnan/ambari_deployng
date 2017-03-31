@@ -16,3 +16,15 @@ def run_shell_command(command):
     process = subprocess.Popen([command], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out,err = process.communicate()
     return out,err,process.returncode
+
+def copy_file_to_host(hostname,file_source,file_destination):
+    copy_command = "scp -t -i /root/ec2-keypair {0} {1}@{2}".format(file_source,hostname,file_destination)
+    logger.info("Executing : {0} ".format(copy_command))
+    response = run_shell_command(copy_command)
+    logger.debug("Execution completed with {} return code. Output :{1}".format(response[2],response[0]))
+
+def copy_file(file_source,file_destination):
+    copy_command = "cp {0} {1}".format(file_source,file_destination)
+    logger.info("Executing : {0} ".format(copy_command))
+    response = run_shell_command(copy_command)
+    logger.debug("Execution completed with {} return code. Output :{1}".format(response[2],response[0]))

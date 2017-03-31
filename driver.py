@@ -145,11 +145,13 @@ def deploy():
     cluster_type = sys.argv[1]
     secure = sys.argv[2]
     os_type = sys.argv[3]
-    hdp_base_url = sys.argv[4]
-
+    is_ha_test = sys.argv[4]
+    hdp_base_url = sys.argv[5]
+    cluster_name ="cl1"
     print "Cluster Type is : "+ cluster_type
     print "HDP BASE URL : " +hdp_base_url
-    if not os.path.isfile("conf/blueprint_{0}.json".format(cluster_type)):
+    print "HA TEST : "+is_ha_test
+    if not os.path.isfile("blueprints/blueprint_{0}.json".format(cluster_type)):
         logger.error("Invalid configuration Cluster Type : {0} Blueprint Does Not Exists. Recheck configuration or create a new blueprint under conf/ folder with format blueprint_{cluster_type} Exiting now!".format(cluster_type))
         exit()
     set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
@@ -159,8 +161,8 @@ def deploy():
     agent_hosts = all_hosts[0:len(all_hosts)-1]
     ambari_host = agent_hosts[0]
     db_host = all_hosts[len(all_hosts)-1]
-    final_blueprint = "conf/blueprint_final.json"
-    ssh_utils.run_shell_command("cp conf/blueprint_{0}.json {1}".format(str(cluster_type).strip(),final_blueprint))
+    final_blueprint = "blueprints/blueprint_final.json"
+    ssh_utils.run_shell_command("cp blueprints/blueprint_{0}.json {1}".format(str(cluster_type).strip(),final_blueprint))
     if "yes" in secure:
         prepare_host_mapping(agent_hosts, True)
         kerberos_utils.install_and_setup_kerberos("mit",ambari_host)
@@ -172,6 +174,8 @@ def deploy():
     db_utils.setup_hive_db(db_host)
     db_utils.setup_oozie_db(db_host)
     db_utils.setup_ranger_db(db_host)
+    if "yes" in is_ha_test:
+        configs_util.setup_ranger_ha(cluster_name,agent_hosts,db_host,"6040")
     configs_util.setup_ranger_policy_url(ambari_host,final_blueprint)
     configs_util.update_db_hosts_in_blueprint(db_host,final_blueprint)
     ambari_utils.setup_ambari_server_after_ranger_setup(ambari_host,"mysql")
@@ -187,8 +191,8 @@ def deploy():
     ambari_utils.register_stack_version(ambari_host, "2.6", os_version, hdp_base_url)
     ambari_utils.provide_log_directory_permissions(agent_hosts)
     register_blueprint(final_blueprint,ambari_host,"blueprint-def")
-    deploy_cluster("cl1",ambari_host,"conf/cluster_template.json")
-    wait_for_cluster_status("cl1",ambari_host)
+    deploy_cluster(cluster_name,ambari_host,"conf/cluster_template.json")
+    wait_for_cluster_status(cluster_name,ambari_host)
 
 if __name__ == "__main__":
     deploy()
