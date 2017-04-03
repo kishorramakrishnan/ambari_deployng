@@ -52,7 +52,7 @@
 				"dfs.namenode.rpc-address.mycluster.nn2": "%HOSTGROUP::master_slave_dep%:8020",
 				"dfs.namenode.shared.edits.dir": "qjournal://localhost:8485/mycluster",
 				"dfs.namenode.avoid.read.stale.datanode": "true",
-				"dfs.namenode.secondary.http-address": "%HOSTGROUP::host_group_4%:20090",
+				"dfs.namenode.secondary.http-address": "%HOSTGROUP::master_slave%:20090",
 				"dfs.namenode.http-address.mycluster.nn2": "%HOSTGROUP::master_slave_dep%:20070",
 				"dfs.namenode.rpc-address": "%HOSTGROUP::client_slave%:8020",
 				"dfs.replication": "3",
@@ -74,7 +74,7 @@
 				"ha.failover-controller.active-standby-elector.zk.op.retries": "120",
 				"fs.defaultFS": "hdfs://mycluster",
 				"proxyuser_group": "users",
-				"ha.zookeeper.quorum": "%HOSTGROUP::client_slave%:2181,%HOSTGROUP::master_slave_dep%:2181,%HOSTGROUP::host_group_4%:2181",
+				"ha.zookeeper.quorum": "%HOSTGROUP::client_slave%:2181,%HOSTGROUP::master_slave_dep%:2181,%HOSTGROUP::master_slave%:2181",
 				"hadoop.proxyuser.hcat.hosts": "%HOSTGROUP::client_slave%,%HOSTGROUP::master_slave_dep%"
 			}
 		}
