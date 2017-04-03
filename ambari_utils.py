@@ -147,10 +147,12 @@ def start_ambari_server(hostname):
 #Restart ambari server
 def restart_ambari_server(hostname):
     logger.info("Restarting ambari server on  host {0}".format(hostname))
-    setup_repo = subprocess.Popen("ambari-server restart",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    setup_repo.communicate()[0]
-    logger.info("Command executed : {0} ".format(setup_repo.returncode))
-
+    restart_ambari = subprocess.Popen("ambari-server restart",shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    restart_ambari.communicate()[0]
+    logger.info("Command executed : {0} ".format(restart_ambari.returncode))
+    if restart_ambari.returncode !=0:
+        logger.error("Ambari server restart failed. Please see server logs for more details")
+        exit()
 #Get Ambari server status
 def get_ambari_server_status(hostname):
     logger.info("Checking ambari server status on  host {0}".format(hostname))
@@ -225,9 +227,9 @@ def register_stack_version(ambari_host,hdp_version,os_string,hdp_base_url):
 
 def get_ambari_repo_url(os_version):
     if str(os_version).lower() in ["centos6","rhel6","r6"]:
-        return "http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.1/ambariqe.repo"
+        return "http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos6/2.x/updates/2.5.0.3/ambariqe.repo"
     elif str(os_version).lower() in ["centos7","rhel7","r7"]:
-        return "http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos7/2.x/updates/2.5.0.1/ambariqe.repo"
+        return "http://dev.hortonworks.com.s3.amazonaws.com/ambari/centos7/2.x/updates/2.5.0.3/ambariqe.repo"
     else:
         return "INVALID"
 def get_os_version_string(os_version):
