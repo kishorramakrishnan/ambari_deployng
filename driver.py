@@ -152,7 +152,7 @@ def deploy():
     print "HDP BASE URL : " +hdp_base_url
     print "HA TEST : "+is_ha_test
     if not os.path.isfile("blueprints/blueprint_{0}.json".format(cluster_type)):
-        logger.error("Invalid configuration Cluster Type : {0} Blueprint Does Not Exists. Recheck configuration or create a new blueprint under conf/ folder with format blueprint_{cluster_type} Exiting now!".format(cluster_type))
+        logger.error("Invalid configuration Cluster Type : {0} Blueprint Does Not Exists. Recheck configuration or create a new blueprint under blueprints/ folder with format blueprint_{cluster_type} Exiting now!".format(cluster_type))
         exit()
     set_prop = subprocess.Popen("set -euf -o pipefail",shell=True)
     set_prop.communicate()
