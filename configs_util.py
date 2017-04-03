@@ -21,7 +21,7 @@ def update_db_hosts_in_blueprint(db_host,blueprint_file):
 def setup_ranger_ha(cluster_name,ranger_admin_hosts,load_balacer_host,ranger_admin_port):
     logger.info("Setting up load balancer on {0}".format(load_balacer_host))
     logger.info("Setting up load balancer for {0}".format(ranger_admin_hosts))
-    update_http_conf()
+    update_http_conf(cluster_name,ranger_admin_hosts,ranger_admin_port,load_balacer_host)
 
 
 def update_http_conf(cluster_name,balancer_hosts,ranger_admin_port,load_balancer_host):
