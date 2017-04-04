@@ -33,7 +33,7 @@ def update_http_conf(cluster_name,balancer_hosts,ranger_admin_port,load_balancer
     balancer_host_string = ""
     for balancer_host in balancer_hosts:
         balancer_host_string = balancer_host_string + "BalancerMember http://{0}:{1} loadfactor=1 route=1 \n".format(balancer_host,ranger_admin_port)
-    logger.debug("Balance host String is {0}".format(balancer_host_string))
+    logger.info("Balance host String is {0}".format(balancer_host_string))
     replace_string_in_file(final_conf_file, "BALANCER_HOST_PLACEHOLDER", balancer_host_string)
     ssh_utils.copy_file_to_host(load_balancer_host,final_conf_file,"/root/")
     ssh_utils.run_ssh_cmd("root",load_balancer_host,"cat /root/ranger_loadbalancer_final.conf >> /etc/httpd/conf/httpd.conf")
@@ -43,7 +43,7 @@ def update_http_conf(cluster_name,balancer_hosts,ranger_admin_port,load_balancer
     ssh_utils.run_ssh_cmd("root", load_balancer_host, "service httpd restart")
 
 def replace_string_in_file(file_name,original_string,replacement_string):
-    replace_cmd = "sed - i's#{0}#{1}#g'{2}".format(original_string,replacement_string,file_name)
+    replace_cmd = "sed -i 's#{0}#{1}#g'{2}".format(original_string,replacement_string,file_name)
     logger.debug("Executing command {0}".format(replace_cmd))
     response = ssh_utils.run_shell_command(replace_cmd)
     logger.debug("Executing command {0} COMPLETED {1}".format(replace_cmd,response[0]))
