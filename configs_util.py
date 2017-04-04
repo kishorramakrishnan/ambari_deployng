@@ -44,9 +44,9 @@ def update_http_conf(cluster_name,balancer_hosts,ranger_admin_port,load_balancer
 
 def replace_string_in_file(file_name,original_string,replacement_string):
     replace_cmd = "sed -i 's#{0}#{1}#g'{2}".format(original_string,replacement_string,file_name)
-    logger.debug("Executing command {0}".format(replace_cmd))
+    logger.info("Executing command {0}".format(replace_cmd))
     response = ssh_utils.run_shell_command(replace_cmd)
-    logger.debug("Executing command {0} COMPLETED {1}".format(replace_cmd,response[0]))
+    logger.info("Executing command {0} COMPLETED {1}".format(replace_cmd,response[0]))
 
 
 
