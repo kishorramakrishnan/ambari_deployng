@@ -29,7 +29,7 @@ def prepare_host_mapping(agent_hosts, is_secure):
         logger.error("Number of nodes in the cluster should be atleast 5")
         exit()
     #Static 
-    
+
     client_slave_fqdns = "\"fqdn\":\""+agent_hosts[0]+"\""
     master_slave_dep_fqdns = "\"fqdn\":\""+agent_hosts[1]+"\""
     master_only_fqdns = "\"fqdn\":\""+agent_hosts[2]+"\""
@@ -55,7 +55,7 @@ def prepare_host_mapping(agent_hosts, is_secure):
     #Replace the json content
     with open('conf/cluster_template.json', 'r+') as file:
     	hosts_json_content = file.read()
-   	file.seek(0)
+        file.seek(0)
     	hosts_json_content=hosts_json_content.replace('\"client_slave_fqdns\":\"\"', client_slave_fqdns)
         hosts_json_content=hosts_json_content.replace('\"master_slave_dep_fqdns\":\"\"', master_slave_dep_fqdns)
         hosts_json_content=hosts_json_content.replace('\"master_only_fqdns\":\"\"', master_only_fqdns)
@@ -175,7 +175,7 @@ def deploy():
     db_utils.setup_oozie_db(db_host)
     db_utils.setup_ranger_db(db_host)
     if "yes" in is_ha_test:
-        configs_util.setup_ranger_ha(cluster_name,agent_hosts,db_host,"6040")
+        configs_util.setup_ranger_ha(cluster_name,agent_hosts,db_host,"6080")
     configs_util.setup_ranger_policy_url(ambari_host,final_blueprint)
     configs_util.update_db_hosts_in_blueprint(db_host,final_blueprint)
     ambari_utils.setup_ambari_server_after_ranger_setup(ambari_host,"mysql")
