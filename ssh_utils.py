@@ -18,6 +18,7 @@ def run_shell_command(command):
     return out,err,process.returncode
 
 def copy_file_to_host(hostname,file_source,file_destination):
+    logger.info("Copying files to remote host {0}".format(hostname))
     copy_command = "scp -i /root/ec2-keypair {0} {1}@{2}:{3}".format(file_source,"root",hostname,file_destination)
     logger.info("Executing : {0} ".format(copy_command))
     response = run_shell_command(copy_command)
