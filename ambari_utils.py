@@ -94,6 +94,14 @@ def install_ambari_agent_on_single_host(hostname):
     out,error = setup_repo.communicate()
     print out + " : " + error
     logger.info("Command executed : {0}".format(setup_repo.returncode))
+    max_retry_count=5
+    retry_count=0;
+    while setup_repo.returncode != 0 and retry_count <= max_retry_count:
+        logger.info("Retrying setup ambari repo as last try failed")
+        setup_repo = subprocess.Popen("ssh -t -i /root/ec2-keypair root@{0} yum install ambari-agent -y".format(hostname),shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE,bufsize=-1)
+        out, error = setup_repo.communicate()
+        logger.info(out + " : " + error)
+        retry_count = retry_count +1;
 
 #Check Amabri-agent status on host
 def is_ambari_agent_running(hostname):
@@ -168,14 +176,22 @@ def setup_ambari_repo(hostname, ambari_repo_url):
     logger.info("Repo setup on single host {0}".format(hostname))
     os_name = platform.platform()
     logger.info("Platform : "+os_name)
+    max_retry_count=5
     if "Darwin" in os_name or "centos" in os_name:
         setup_repo_command = "ssh -t -i /root/ec2-keypair root@{0} wget -O /etc/yum.repos.d/ambari.repo {1}".format(hostname,ambari_repo_url)
         logger.info("REPO COMMAND :: > {0}".format(setup_repo_command))
         try:
             command_out = subprocess.Popen(setup_repo_command,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE,bufsize=-1)
             out,error = command_out.communicate()
-            print out + " : " + error
+            logger.info(out + " : " + error)
             logger.info("Setup Command executed :{0} ".format(command_out.returncode))
+            retry_count=0
+            while command_out.returncode != 0 and retry_count <= max_retry_count:
+                logger.info("Retrying setup ambari repo as last try failed")
+                command_out = subprocess.Popen(setup_repo_command, shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE, bufsize=-1)
+                out, error = command_out.communicate()
+                logger.info(out + " : " + error)
+                retry_count = retry_count + 1;
         except Exception,e:
             logger.info("exception in Setup {0}".format(e))
             command_out.kill()
