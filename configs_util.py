@@ -33,6 +33,7 @@ def update_http_conf(cluster_name,balancer_hosts,ranger_admin_port,load_balancer
     balancer_host_string = ""
     for balancer_host in balancer_hosts:
         balancer_host_string = balancer_host_string + "BalancerMember http://{0}:{1} loadfactor=1 route=1 \n".format(balancer_host,ranger_admin_port)
+    balancer_host_string = balancer_host_string[:-2]
     logger.info("Balance host String is {0}".format(balancer_host_string))
     replace_string_in_file(final_conf_file, "BALANCER_HOST_PLACEHOLDER", balancer_host_string)
     ssh_utils.copy_file_to_host(load_balancer_host,final_conf_file,"/root/")
