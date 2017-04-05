@@ -413,7 +413,7 @@
 	}, {
 		"krb5-conf": {
 			"properties": {
-				"domains": "hwx.site,.hwx.site",
+				"domains": "l42scl.hortonworks.com,.l42scl.hortonworks.com",
 				"manage_krb5_conf": "true"
 			}
 		}

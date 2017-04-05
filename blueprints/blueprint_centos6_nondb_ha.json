@@ -183,7 +183,7 @@
 				"yarn.timeline-service.bind-host": "0.0.0.0",
 				"yarn.timeline-service.leveldb-timeline-store.start-time-read-cache-size": "10000",
 				"yarn.resourcemanager.webapp.https.address": "%HOSTGROUP::client_slave%:8088",
-				"yarn.resourcemanager.hostname.rm2": "%HOSTGROUP::client_slave%",
+				"yarn.resourcemanager.hostname.rm2": "%HOSTGROUP::master_slave_dep%",
 				"yarn.resourcemanager.webapp.address": "%HOSTGROUP::client_slave%:8088",
 				"yarn.resourcemanager.zk-address": "%HOSTGROUP::client_slave%:2181,%HOSTGROUP::master_slave_dep%:2181,%HOSTGROUP::master_only%:2181,%HOSTGROUP::master_slave%:2181",
 				"yarn.resourcemanager.address": "%HOSTGROUP::client_slave%:8050",
@@ -199,7 +199,7 @@
 				"yarn.resourcemanager.admin.address": "%HOSTGROUP::client_slave%:8141",
 				"yarn.resourcemanager.ha.rm-ids": "rm1,rm2",
 				"yarn.resourcemanager.ha.enabled": "true",
-				"yarn.resourcemanager.hostname.rm1": "HOSTGROUP::client_slave",
+				"yarn.resourcemanager.hostname.rm1": "%HOSTGROUP::client_slave%",
 				"yarn.resourcemanager.webapp.address.rm2": "%HOSTGROUP::master_slave_dep%:8088",
 				"yarn.resourcemanager.scheduler.class": "org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler"
 			}
@@ -496,7 +496,7 @@
 	}, {
 		"krb5-conf": {
 			"properties": {
-				"domains": "hwx.site,.hwx.site",
+				"domains": "l42scl.hortonworks.com,.l42scl.hortonworks.com",
 				"manage_krb5_conf": "true"
 			}
 		}
