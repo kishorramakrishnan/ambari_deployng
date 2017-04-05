@@ -666,38 +666,6 @@
 		}, {
 			"name": "INFRA_SOLR_CLIENT"
 		}]
-	}, {
-		"name": "add-host",
-		"cardinality": "1",
-		"components": [{
-			"name": "HDFS_CLIENT"
-		}, {
-			"name": "YARN_CLIENT"
-		}, {
-			"name": "MAPREDUCE2_CLIENT"
-		}, {
-			"name": "HBASE_CLIENT"
-		}, {
-			"name": "HIVE_CLIENT"
-		}, {
-			"name": "HCAT"
-		}, {
-			"name": "ZOOKEEPER_CLIENT"
-		}, {
-			"name": "SPARK_CLIENT"
-		}, {
-			"name": "TEZ_CLIENT"
-		}, {
-			"name": "PIG"
-		}, {
-			"name": "SQOOP"
-		}, {
-			"name": "SLIDER"
-		}, {
-			"name": "MAHOUT"
-		}, {
-			"name": "INFRA_SOLR_CLIENT"
-		}]
 	}],
 	"Blueprints": {
 		"blueprint_name": "blueprint-def",
