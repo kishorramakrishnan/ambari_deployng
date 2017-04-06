@@ -1,0 +1,671 @@
+{
+	"configurations": [{
+		"cluster-env": {
+			"properties": {
+				"command_retry_max_time_in_sec": "1200"
+			}
+		}
+	}, {
+		"mapred-env": {
+			"properties": {
+				"mapreduce_log_dir_prefix": "/grid/0/log/hadoop-mapreduce",
+				"mapred_log_dir_prefix": "/grid/0/log/hadoop-mapreduce",
+				"mapred_user": "cstm-mr"
+			}
+		}
+	}, {
+		"hdfs-site": {
+			"properties": {
+				"dfs.datanode.data.dir": "/grid/0/hadoop/hdfs/data",
+				"dfs.namenode.name.dir": "/grid/0/hadoop/hdfs/namenode",
+				"dfs.namenode.checkpoint.dir": "/grid/0/hadoop/hdfs/namesecondary",
+				"dfs.journalnode.edits.dir": "/grid/0/hadoop/hdfs/journal",
+				"dfs.namenode.http-address": "%HOSTGROUP::client_slave%:20070",
+				"dfs.datanode.https.address": "0.0.0.0:20475",
+				"nfs.udp.client.portmap.timeout.millis": "5000",
+				"dfs.namenode.secondary.http-address": "%HOSTGROUP::master_slave_dep%:20090"
+			}
+		}
+	}, {
+		"core-site": {
+			"properties": {
+				"io.compression.codec.lzo.class": "com.hadoop.compression.lzo.LzoCodec",
+				"io.compression.codecs": "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.SnappyCodec,com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec",
+				"hadoop.proxyuser.hdfs.groups": "*",
+				"hadoop.proxyuser.hdfs.hosts": "*",
+				"hadoop.proxyuser.hive.hosts": "*",
+				"hadoop.proxyuser.oozie.groups": "*",
+				"hadoop.proxyuser.falcon.groups": "*",
+				"hadoop.proxyuser.oozie.hosts": "*",
+				"hadoop.proxyuser.hcat.hosts": "*",
+				"hadoop.proxyuser.falcon.hosts": "*",
+				"hadoop.proxyuser.hive.groups": "*",
+				"hadoop.proxyuser.hcat.groups": "*",
+				"fs.azure.account.key.hwxasvtesting.blob.core.windows.net": "R/1hsiE/qdHPZU9yfrSPlOcJ7AvPAtdsaNyRxaWC++NkU8jxHNC1m6ZsuOpRqyodiP/Fnn29NrI+/zZ4nEJN6A\u003d\u003d"
+			}
+		}
+	}, {
+		"hadoop-env": {
+			"properties": {
+				"hdfs_log_dir_prefix": "/grid/0/log/hdfs",
+				"namenode_heapsize": "1500",
+				"hdfs_user": "cstm-hdfs",
+				"proxyuser_group": "cstm-users"
+			}
+		}
+	}, {
+		"oozie-site": {
+			"properties": {
+				"oozie.service.JPAService.jdbc.password": "password",
+				"oozie.email.smtp.password": "",
+				"oozie.service.coord.check.maximum.frequency": "false",
+				"oozie.service.ProxyUserService.proxyuser.falcon.groups": "*",
+				"oozie.email.smtp.username": "",
+				"oozie.email.smtp.port": "25",
+				"oozie.email.from.address": "qe-group@hortonworks.com",
+				"oozie.email.smtp.auth": "false",
+				"oozie.service.ProxyUserService.proxyuser.falcon.hosts": "*",
+				"oozie.email.smtp.host": "localhost",
+				"oozie.authentication.kerberos.principal": "HTTP/_HOST@EXAMPLE.COM"
+			}
+		}
+	}, {
+		"oozie-env": {
+			"properties": {
+				"oozie_log_dir": "/grid/0/log/oozie",
+				"oozie_user": "cstm-oozie"
+			}
+		}
+	}, {
+		"spark2-env": {
+			"properties": {
+				"spark_group": "cstm-spark",
+				"spark_user": "cstm-spark"
+			}
+		}
+	}, {
+		"hive-env": {
+			"properties": {
+				"webhcat_user": "cstm-hcat",
+				"hcat_user": "cstm-hcat",
+				"hive_user": "cstm-hive",
+				"hcat_log_dir": "/grid/0/log/webhcat",
+				"hive_log_dir": "/grid/0/log/hive"
+			}
+		}
+	}, {
+		"storm-env": {
+			"properties": {
+				"storm_user": "cstm-storm",
+				"storm_log_dir": "/grid/0/log/storm",
+				"jmxremote_port": "26431"
+			}
+		}
+	}, {
+		"knox-env": {
+			"properties": {
+				"knox_user": "cstm-knox",
+				"knox_group": "cstm-knox",
+				"knox_master_secret": "knoxsecret"
+			}
+		}
+	}, {
+		"livy-env": {
+			"properties": {
+				"livy_user": "cstm-livy",
+				"livy_group": "cstm-livy",
+				"livy_log_dir": "/grid/0/log/livy"
+			}
+		}
+	}, {
+		"mahout-env": {
+			"properties": {
+				"mahout_user": "cstm-mahout"
+			}
+		}
+	}, {
+		"hbase-env": {
+			"properties": {
+				"hbase_user": "cstm-hbase",
+				"hbase_log_dir": "/grid/0/log/hbase",
+				"hbase_java_io_tmpdir": "/grid/0/hbase-tmp",
+				"phoenix_sql_enabled": "true"
+			}
+		}
+	}, {
+		"yarn-env": {
+			"properties": {
+				"yarn_user": "cstm-yarn",
+				"yarn_log_dir_prefix": "/grid/0/log/yarn"
+			}
+		}
+	}, {
+		"spark-env": {
+			"properties": {
+				"spark_user": "cstm-spark",
+				"spark_group": "cstm-spark"
+			}
+		}
+	}, {
+		"atlas-env": {
+			"properties": {
+				"metadata_user": "cstm-atlas",
+				"metadata_log_dir": "/grid/0/log/atlas"
+			}
+		}
+	}, {
+		"zeppelin-env": {
+			"properties": {
+				"zeppelin_user": "cstm-zeppelin",
+				"zeppelin_group": "cstm-zeppelin",
+				"zeppelin_log_dir": "/grid/0/log/zeppelin"
+			}
+		}
+	}, {
+		"kms-env": {
+			"properties": {
+				"kms_user": "cstm-kms",
+				"kms_group": "cstm-kms"
+			}
+		}
+	}, {
+		"logsearch-env": {
+			"properties": {
+				"logsearch_user": "cstm-logsearch",
+				"logsearch_log_dir": "/grid/0/log/ambari-logsearch-portal"
+			}
+		}
+	}, {
+		"tez-env": {
+			"properties": {
+				"tez_user": "cstm-tez"
+			}
+		}
+	}, {
+		"flume-env": {
+			"properties": {
+				"flume_user": "cstm-flume",
+				"flume_log_dir": "/grid/0/log/flume"
+			}
+		}
+	}, {
+		"infra-solr-env": {
+			"properties": {
+				"infra_solr_user": "cstm-infra-solr"
+			}
+		}
+	}, {
+		"sqoop-env": {
+			"properties": {
+				"sqoop_user": "cstm-sqoop"
+			}
+		}
+	}, {
+		"kafka-env": {
+			"properties": {
+				"kafka_user": "cstm-kafka",
+				"kafka_log_dir": "/grid/0/log/kafka"
+			}
+		}
+	}, {
+		"ams-env": {
+			"properties": {
+				"ambari_metrics_user": "cstm-ams",
+				"metrics_collector_log_dir": "/grid/0/log/metric_collector",
+				"metrics_monitor_log_dir": "/grid/0/log/metric_monitor"
+			}
+		}
+	}, {
+		"accumulo-env": {
+			"properties": {
+				"accumulo_user": "cstm-accumulo"
+			}
+		}
+	}, {
+		"ranger-env": {
+			"properties": {
+				"ranger_user": "cstm-ranger",
+				"ranger_group": "cstm-ranger"
+			}
+		}
+	}, {
+		"zookeeper-env": {
+			"properties": {
+				"zk_user": "cstm-zookeeper",
+				"zk_log_dir": "/grid/0/log/zookeeper"
+			}
+		}
+	}, {
+		"falcon-env": {
+			"properties": {
+				"falcon_user": "cstm-falcon",
+				"falcon_log_dir": "/grid/0/log/falcon"
+			}
+		}
+	}, {
+		"hbase-site": {
+			"properties": {
+				"hbase.master.info.port": "30010",
+				"hbase.regionserver.info.port": "20030",
+				"hbase.master.port": "20000"
+			}
+		}
+	}, {
+		"zoo.cfg": {
+			"properties": {
+				"dataDir": "/grid/0/hadoop/zookeeper",
+				"tickTime": "4500"
+			}
+		}
+	}, {
+		"yarn-site": {
+			"properties": {
+				"yarn.nodemanager.delete.debug-delay-sec": "3600",
+				"yarn.nodemanager.local-dirs": "/grid/0/hadoop/yarn/local",
+				"yarn.nodemanager.log-dirs": "/grid/0/hadoop/yarn/log",
+				"yarn.timeline-service.leveldb-state-store.path": "/grid/0/hadoop/yarn/timeline",
+				"yarn.timeline-service.leveldb-timeline-store.path": "/grid/0/hadoop/yarn/timeline",
+				"yarn.nodemanager.address": "0.0.0.0:25454"
+			}
+		}
+	}, {
+		"capacity-scheduler": {
+			"properties": {
+				"yarn.scheduler.capacity.maximum-am-resource-percent": "0.4"
+			}
+		}
+	}, {
+		"storm-site": {
+			"properties": {
+				"topology.max.spout.pending": "100000",
+				"storm.zookeeper.session.timeout": "90000"
+			}
+		}
+	}, {
+		"hive-site": {
+			"properties": {
+				"atlas.cluster.name": "cl1",
+				"atlas.hook.hive.maxThreads": "1",
+				"atlas.hook.hive.minThreads": "1",
+				"hive.metastore.dml.events": "true",
+				"hive.metastore.event.listeners": "org.apache.hive.hcatalog.listener.DbNotificationListener"
+			}
+		}
+	}, {
+		"webhcat-site": {
+			"properties": {
+				"templeton.port": "20111"
+			}
+		}
+	}, {
+		"ams-hbase-site": {
+			"properties": {
+				"hbase.rootdir": "file:///grid/0/lib/ambari-metrics-collector/hbase",
+				"hbase.tmp.dir": "/grid/0/lib/ambari-metrics-collector/hbase-tmp"
+			}
+		}
+	}, {
+		"ams-hbase-env": {
+			"properties": {
+				"hbase_log_dir": "/grid/0/log/metric_collector"
+			}
+		}
+	}, {
+		"ams-site": {
+			"properties": {
+				"timeline.metrics.service.rpc.address": "0.0.0.0:20200"
+			}
+		}
+	}, {
+		"ams-grafana-env": {
+			"properties": {
+				"metrics_grafana_password": "admin"
+			}
+		}
+	}, {
+		"infra-solr-client-log4j": {
+			"properties": {
+				"infra_solr_client_log_dir": "/grid/0/log/ambari-infra-solr-client"
+			}
+		}
+	}, {
+		"flume-conf": {
+			"properties": {
+				"content": "# Name the components on this agent\na1.sources \u003d src1\na1.sinks \u003d sink1\na1.channels \u003d c1\n\n# Use a channel which buffers events in memory\na1.channels.c1.type \u003d memory\na1.channels.c1.capacity \u003d 10000\na1.channels.c1.transactionCapacity \u003d 100\n\n# Configure the source\n# a1.sources.src1.type \u003d exec\n# a1.sources.src1.command \u003d  tail -f /var/log/ambari-a1/ambari-a1.log\na1.sources.src1.channels \u003d c1\na1.sources.src1.type \u003d multiport_syslogtcp\na1.sources.src1.host \u003d 0.0.0.0\na1.sources.src1.ports \u003d 8004\n\n# Configure the sink\na1.sinks.sink1.type \u003d hdfs\na1.sinks.sink1.hdfs.path \u003d hdfs://%HOSTGROUP::client_slave%:8020/tmp/logs/\na1.sinks.sink1.hdfs.filePrefix \u003d events-\na1.sinks.sink1.hdfs.round \u003d true\na1.sinks.sink1.hdfs.roundValue \u003d 10\na1.sinks.sink1.hdfs.roundUnit \u003d minute\n\n#a1.sinks.sink1.type \u003d logger\na1.sinks.sink1.channel \u003d c1\n\n# Name the components on this agent\na2.sources \u003d src2\na2.sinks \u003d sink2\na2.channels \u003d c2\n\n# Use a channel which buffers events in memory\na2.channels.c2.type \u003d memory\na2.channels.c2.capacity \u003d 10000\na2.channels.c2.transactionCapacity \u003d 100\n\n# Configure the source\n# a2.sources.src2.type \u003d exec\n# a2.sources.src2.command \u003d  tail -f /var/log/ambari-a2/ambari-a2.log\na2.sources.src2.channels \u003d c2\na2.sources.src2.type \u003d multiport_syslogtcp\na2.sources.src2.host \u003d 0.0.0.0\na2.sources.src2.ports \u003d 8003\n\n# Configure the sink\na2.sinks.sink2.type \u003d hdfs\na2.sinks.sink2.hdfs.path \u003d hdfs://%HOSTGROUP::client_slave%:8020/tmp/logs/\na2.sinks.sink2.hdfs.filePrefix \u003d events-\na2.sinks.sink2.hdfs.round \u003d true\na2.sinks.sink2.hdfs.roundValue \u003d 10\na2.sinks.sink2.hdfs.roundUnit \u003d minute\n\n#a2.sinks.sink2.type \u003d logger\na2.sinks.sink2.channel \u003d c2"
+			}
+		}
+	}, {
+		"logfeeder-env": {
+			"properties": {
+				"logfeeder_log_dir": "/grid/0/log/ambari-logsearch-logfeeder"
+			}
+		}
+	}, {
+		"logsearch-properties": {
+			"properties": {
+				"logsearch.logfeeder.include.default.level": "FATAL,ERROR,WARN,INFO,DEBUG,TRACE,UNKNOWN"
+			}
+		}
+	}, {
+		"logsearch-admin-json": {
+			"properties": {
+				"logsearch_admin_username": "ambari_logsearch_admin",
+				"logsearch_admin_password": "admin"
+			}
+		}
+	}, {
+		"falcon-startup.properties": {
+			"properties": {
+				"prism.system.lib.location": "${falcon.home}/server/webapp/prism/WEB-INF/lib",
+				"*.falcon.security.authorization.enabled": "true",
+				"*.shared.libs": "activemq-all,ant,geronimo-j2ee-management,jms,json-simple,oozie-client,spring-jms,commons-lang3,commons-el"
+			}
+		}
+	}, {
+		"falcon-runtime.properties": {
+			"properties": {
+				"*.feed.late.frequency": "minutes(3)",
+				"*.workflow.status.retry.count": "150"
+			}
+		}
+	}, {
+		"activity-log4j": {
+			"properties": {
+				"activity_log_dir": "/grid/0/log/smartsense-activity"
+			}
+		}
+	}, {
+		"hst-agent-conf": {
+			"properties": {
+				"server.connection_retry_interval": "7",
+				"server.connection_retry_count": "500"
+			}
+		}
+	}, {
+		"hst-server-conf": {
+			"properties": {
+				"customer.smartsense.id": "A-00000000-C-00000000",
+				"customer.notification.email": "abcqe@hortonworks.com",
+				"customer.account.name": "Hortonworks"
+			}
+		}
+	}, {
+		"activity-zeppelin-shiro": {
+			"properties": {
+				"users.admin": "admin"
+			}
+		}
+	}, {
+		"kerberos-env": {
+			"properties": {
+				"realm": "EXAMPLE.COM",
+				"kdc_type": "KDC_TYPE_PLACEHOLDER",
+				"kdc_hosts": "KDC_HOST_PLACEHOLDER",
+				"admin_server_host": "KDC_AMBARI_SERVER_PLACEHOLDER",
+				"encryption_types": "KDC_ENCRYPTION_TYPE_PLACEHOLDER",
+				"service_check_principal_name": "KDC_SERVICE_CHECK_PRINICPAL"
+			}
+		}
+	}, {
+		"krb5-conf": {
+			"properties": {
+				"domains": "l42scl.hortonworks.com,.l42scl.hortonworks.com",
+				"manage_krb5_conf": "true"
+			}
+		}
+	}],
+	"host_groups": [{
+		"name": "client_slave",
+		"cardinality": "1",
+		"components": [{
+			"name": "NAMENODE"
+		}, {
+			"name": "RESOURCEMANAGER"
+		}, {
+			"name": "KAFKA_BROKER"
+		}, {
+			"name": "HDFS_CLIENT"
+		}, {
+			"name": "YARN_CLIENT"
+		}, {
+			"name": "MAPREDUCE2_CLIENT"
+		}, {
+			"name": "HBASE_CLIENT"
+		}, {
+			"name": "ZOOKEEPER_CLIENT"
+		}, {
+			"name": "FALCON_CLIENT"
+		}, {
+			"name": "TEZ_CLIENT"
+		}, {
+			"name": "PIG"
+		}, {
+			"name": "SQOOP"
+		}, {
+			"name": "SLIDER"
+		}, {
+			"name": "MAHOUT"
+		}, {
+			"name": "ATLAS_CLIENT"
+		}, {
+			"name": "INFRA_SOLR_CLIENT"
+		}, {
+			"name": "HST_AGENT"
+		}, {
+			"name": "SUPERVISOR"
+		}, {
+			"name": "LOGSEARCH_LOGFEEDER"
+		}, {
+			"name": "METRICS_MONITOR"
+		}, {
+			"name": "FLUME_HANDLER"
+		}, {
+			"name": "NFS_GATEWAY"
+		}]
+	}, {
+		"name": "master_slave_dep",
+		"cardinality": "1",
+		"components": [{
+			"name": "SECONDARY_NAMENODE"
+		}, {
+			"name": "KNOX_GATEWAY"
+		}, {
+			"name": "HBASE_MASTER"
+		}, {
+			"name": "NIMBUS"
+		}, {
+			"name": "ZEPPELIN_MASTER"
+		}, {
+			"name": "ZOOKEEPER_SERVER"
+		}, {
+			"name": "KAFKA_BROKER"
+		}, {
+			"name": "ACTIVITY_EXPLORER"
+		}, {
+			"name": "HST_SERVER"
+		}, {
+			"name": "DRPC_SERVER"
+		}, {
+			"name": "INFRA_SOLR"
+		}, {
+			"name": "APP_TIMELINE_SERVER"
+		}, {
+			"name": "DATANODE"
+		}, {
+			"name": "NFS_GATEWAY"
+		}, {
+			"name": "HDFS_CLIENT"
+		}, {
+			"name": "NODEMANAGER"
+		}, {
+			"name": "YARN_CLIENT"
+		}, {
+			"name": "MAPREDUCE2_CLIENT"
+		}, {
+			"name": "HBASE_REGIONSERVER"
+		}, {
+			"name": "HBASE_CLIENT"
+		}, {
+			"name": "PHOENIX_QUERY_SERVER"
+		}, {
+			"name": "ZOOKEEPER_CLIENT"
+		}, {
+			"name": "SUPERVISOR"
+		}, {
+			"name": "FALCON_CLIENT"
+		}, {
+			"name": "FLUME_HANDLER"
+		}, {
+			"name": "METRICS_MONITOR"
+		}, {
+			"name": "TEZ_CLIENT"
+		}, {
+			"name": "PIG"
+		}, {
+			"name": "SQOOP"
+		}, {
+			"name": "SLIDER"
+		}, {
+			"name": "MAHOUT"
+		}, {
+			"name": "ATLAS_CLIENT"
+		}, {
+			"name": "HST_AGENT"
+		}, {
+			"name": "LOGSEARCH_LOGFEEDER"
+		}, {
+			"name": "INFRA_SOLR_CLIENT"
+		}]
+	}, {
+		"name": "master_only",
+		"cardinality": "1",
+		"components": [{
+			"name": "ZOOKEEPER_SERVER"
+		}, {
+			"name": "KAFKA_BROKER"
+		}, {
+			"name": "METRICS_COLLECTOR"
+		}, {
+			"name": "METRICS_GRAFANA"
+		}, {
+			"name": "DATANODE"
+		}, {
+			"name": "NFS_GATEWAY"
+		}, {
+			"name": "HDFS_CLIENT"
+		}, {
+			"name": "NODEMANAGER"
+		}, {
+			"name": "YARN_CLIENT"
+		}, {
+			"name": "MAPREDUCE2_CLIENT"
+		}, {
+			"name": "HBASE_REGIONSERVER"
+		}, {
+			"name": "HBASE_CLIENT"
+		}, {
+			"name": "PHOENIX_QUERY_SERVER"
+		}, {
+			"name": "ZOOKEEPER_CLIENT"
+		}, {
+			"name": "SUPERVISOR"
+		}, {
+			"name": "FALCON_CLIENT"
+		}, {
+			"name": "FLUME_HANDLER"
+		}, {
+			"name": "METRICS_MONITOR"
+		}, {
+			"name": "TEZ_CLIENT"
+		}, {
+			"name": "PIG"
+		}, {
+			"name": "SQOOP"
+		}, {
+			"name": "SLIDER"
+		}, {
+			"name": "MAHOUT"
+		}, {
+			"name": "ATLAS_CLIENT"
+		}, {
+			"name": "HST_AGENT"
+		}, {
+			"name": "LOGSEARCH_LOGFEEDER"
+		}, {
+			"name": "INFRA_SOLR_CLIENT"
+		}]
+	}, {
+		"name": "master_slave",
+		"cardinality": "1",
+		"components": [{
+			"name": "ZOOKEEPER_SERVER"
+		}, {
+			"name": "KAFKA_BROKER"
+		}, {
+			"name": "FALCON_SERVER"
+		}, {
+			"name": "HISTORYSERVER"
+		}, {
+			"name": "ACTIVITY_ANALYZER"
+		}, {
+			"name": "ATLAS_SERVER"
+		}, {
+			"name": "LOGSEARCH_SERVER"
+		}, {
+			"name": "STORM_UI_SERVER"
+		}, {
+			"name": "DATANODE"
+		}, {
+			"name": "NFS_GATEWAY"
+		}, {
+			"name": "HDFS_CLIENT"
+		}, {
+			"name": "NODEMANAGER"
+		}, {
+			"name": "YARN_CLIENT"
+		}, {
+			"name": "MAPREDUCE2_CLIENT"
+		}, {
+			"name": "HBASE_REGIONSERVER"
+		}, {
+			"name": "HBASE_CLIENT"
+		}, {
+			"name": "PHOENIX_QUERY_SERVER"
+		}, {
+			"name": "ZOOKEEPER_CLIENT"
+		}, {
+			"name": "SUPERVISOR"
+		}, {
+			"name": "FALCON_CLIENT"
+		}, {
+			"name": "FLUME_HANDLER"
+		}, {
+			"name": "METRICS_MONITOR"
+		}, {
+			"name": "TEZ_CLIENT"
+		}, {
+			"name": "PIG"
+		}, {
+			"name": "SQOOP"
+		}, {
+			"name": "SLIDER"
+		}, {
+			"name": "MAHOUT"
+		}, {
+			"name": "ATLAS_CLIENT"
+		}, {
+			"name": "HST_AGENT"
+		}, {
+			"name": "LOGSEARCH_LOGFEEDER"
+		}, {
+			"name": "INFRA_SOLR_CLIENT"
+		}]
+	 }
+	],
+	"Blueprints": {
+		"blueprint_name": "blueprint-def",
+		"stack_name": "HDP",
+		"stack_version": "2.6"
+	},
+	"settings": []
+}

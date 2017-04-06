@@ -1,0 +1,27 @@
+{
+	"blueprint": "blueprint-def",
+	"default_password": "password",
+	"config_recommendation_strategy": "ALWAYS_APPLY_DONT_OVERRIDE_CUSTOM_VALUES",
+	"host_groups": [{
+		"name": "host_group_master_slave",
+		"hosts": [{
+			"fqdn_master_slave_place_holder":""
+		}]
+	}, {
+		"name": "host_group_master",
+		"hosts": [{
+			"fqdn_master_place_holder":""
+		}]
+	}, {
+		"name": "host_group_client_slave",
+		"hosts": [{
+			"fqdn_client_slave_place_holder":""
+		}]
+	},{
+		"name": "host_group_slave",
+		"hosts": [{
+			"fqdn_slave_place_holder":""
+		}]
+	}
+	]
+}
